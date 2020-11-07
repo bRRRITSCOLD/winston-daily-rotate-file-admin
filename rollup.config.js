@@ -48,7 +48,7 @@ export default {
 			},
 			preprocess: sveltePreprocess({
         postcss: {
-          includePaths: ['styles', 'node_modules'],
+          includePaths: ['theme'],
         }
       })
 		}),
