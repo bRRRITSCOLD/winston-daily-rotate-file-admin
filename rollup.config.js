@@ -48,26 +48,10 @@ export default {
 			},
 			preprocess: sveltePreprocess({
         postcss: {
-          includePaths: ['theme'],
+          includePaths: ['node_modules', 'theme'],
         }
       })
 		}),
-    // postcss({
-    //   extensions: ['.scss', '.sass'],
-    //   extract: false,
-    //   minimize: true,
-    //   use: [
-    //     ['sass', {
-    //       includePaths: [
-    //         './src/styles',
-    //         './node_modules',
-    //         // This is only needed because we're using a local module. :-/
-    //         // Normally, you would not need this line.
-    //         // path.resolve(__dirname, '..', 'node_modules')
-    //       ]
-    //     }]
-    //   ]
-    // }),
 		// If you have external dependencies installed from
 		// npm, you'll most likely need these plugins. In
 		// some cases you'll need additional configuration -
