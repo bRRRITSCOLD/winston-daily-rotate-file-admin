@@ -2,7 +2,7 @@
   // node_modules
   import { push } from 'svelte-spa-router'
   import { watchResize } from "svelte-watch-resize";
-  import { Button } from 'svelte-materialify';
+  import { Button, TextField } from 'svelte-materialify/src';
 
   // libraries
 
@@ -35,10 +35,13 @@
 
 <main>
   <div class="flex-box-column">
-    <div class="text-align-right">
-      <Button on:click={async () => {
-        await logsStore.addLogDirectory();
-      }} class="primary-color">Add Directory</Button>
+    <div class="flex-box-row">
+      <TextField>Filter</TextField>
+      <div class="text-align-right">
+        <Button on:click={async () => {
+          await logsStore.addLogDirectory();
+        }} class="primary-color">Add Directory</Button>
+      </div>
     </div>
     <div
       class='container'

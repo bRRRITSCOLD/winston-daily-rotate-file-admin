@@ -1,5 +1,5 @@
 <script lang="ts">
-  // noce_modules
+  // node_modules
   import { createEventDispatcher } from "svelte";
   const dispatch = createEventDispatcher();
 
@@ -192,7 +192,7 @@
 </style>
 
 <div
-  class="virtual-table-wrapper mdc-data-table"
+  class="virtual-table-wrapper"
   style="padding-top: {rowHeight}px;"
   bind:this={wrapper}
 >

@@ -1,6 +1,8 @@
 <script>
-  import Breadcrumbs from 'svelte-materialify/src/components/Breadcrumbs/Breadcrumbs.svelte';
+  import { Breadcrumbs } from 'svelte-materialify/dist';
 
+  // props
+  export let crumbs;
   const items = [
     { text: 'Dashboard', href: '/components/breadcrumbs/' },
     { text: 'Link 1', href: '/components/breadcrumbs/' },
@@ -8,14 +10,14 @@
   ];
 </script>
 
-<Breadcrumbs {items} let:item>
-  {#if item.href}
-    <a class="s-breadcrumb-item" href={item.href} class:disabled={item.disabled}>
-      {item.text.toUpperCase()}
+<Breadcrumbs {crumbs} let:crumb>
+  {#if crumb.href}
+    <a class="s-breadcrumb-item" href={crumb.href} class:disabled={crumb.disabled}>
+      {crumb.text.toUpperCase()}
     </a>
   {:else}
-    <span class="s-breadcrumb-item" class:disabled={item.disabled}>
-      {item.text.toUpperCase()}
+    <span class="s-breadcrumb-item" class:disabled={crumb.disabled}>
+      {crumb.text.toUpperCase()}
     </span>
   {/if}
 </Breadcrumbs>
