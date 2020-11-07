@@ -1,6 +1,5 @@
 <script>
-  import AppBar from 'svelte-materialify/src/components/AppBar';
-  import Breadcrumbs from 'svelte-materialify/src/components/Breadcrumbs';
+  import Breadcrumbs from 'svelte-materialify/src/components/Breadcrumbs/Breadcrumbs.svelte';
 
   const items = [
     { text: 'Dashboard', href: '/components/breadcrumbs/' },
@@ -8,19 +7,18 @@
     { text: 'Link 2', disabled: true },
   ];
 </script>
-<AppBar>
-  <Breadcrumbs {items} let:item>
-    {#if item.href}
-      <a class="s-breadcrumb-item" href={item.href} class:disabled={item.disabled}>
-        {item.text.toUpperCase()}
-      </a>
-    {:else}
-      <span class="s-breadcrumb-item" class:disabled={item.disabled}>
-        {item.text.toUpperCase()}
-      </span>
-    {/if}
-  </Breadcrumbs>
-</AppBar>
+
+<Breadcrumbs {items} let:item>
+  {#if item.href}
+    <a class="s-breadcrumb-item" href={item.href} class:disabled={item.disabled}>
+      {item.text.toUpperCase()}
+    </a>
+  {:else}
+    <span class="s-breadcrumb-item" class:disabled={item.disabled}>
+      {item.text.toUpperCase()}
+    </span>
+  {/if}
+</Breadcrumbs>
 <!-- <script lang="ts">
   // node_modules
   import { link, location, querystring } from 'svelte-spa-router'
