@@ -1,5 +1,6 @@
 <script lang="ts">
   // node_modules
+  import { Divider } from 'svelte-materialify/src';
   import { createEventDispatcher } from "svelte";
   const dispatch = createEventDispatcher();
 
@@ -190,18 +191,23 @@
     /* border-bottom: 1px solid #666; */
   }
 </style>
-
+<!-- 
 <div
   class="virtual-table-wrapper"
-  style="padding-top: {rowHeight}px;"
+  style="padding-top: {rowHeight}px; border: 5px solid red;"
   bind:this={wrapper}
+> -->
+<div
+class="virtual-table-wrapper"
+style="padding-top: {rowHeight}px;"
+bind:this={wrapper}
 >
   <div
     class="virtual-table-headers"
     style="height: {rowHeight}px;"
   >
     <div
-      class="virtual-table-header-row mdc-data-table__header-row"
+      class="virtual-table-header-row"
       style="left: -{__scrollLeft}px; height: {rowHeight}px; width: {gridSpaceWidth}px;"
     >
       {#each columns as column, i (i)}
@@ -238,44 +244,45 @@
     style="height: 100%;"
   >
     <div
-      class="virtual-table-body-contents mdc-data-table__content"
+      class="virtual-table-body-contents"
       style="width: {gridSpaceWidth}px; height: {gridSpaceHeight}px;"
     >
     {#each visibleRows as row, i}
       <div
-        class="virtual-table-row mdc-data-table__row"
+        class="virtual-table-row"
         style="top: {getRowTop(row.i, rowHeight)}px; height: {rowHeight}px;
         width: {gridSpaceWidth}px;"
         role="row"
         aria-rowindex={row.i}>
         {#each columns as column, j}
           <div
-            class="virtual-table-cell mdc-data-table__cell"
+            class="virtual-table-cell"
             style="z-index: {getCellZIndex(__affixedColumnIndices, j)}; left: {getCellLeft(
               { i: j, columnWidths, __affixedColumnIndices, __scrollLeft }
             )}px; height: {rowHeight}px; line-height: {rowHeight}px; width: {columnWidths[j]}px; padding-left: 0px; padding-right: 0px;"
-            role="cell">
+            role="cell"
+            on:click={(event) => {
+              dispatch('onVirtualTableRowCellClick', {
+                columnIndex: j,
+                rowIndex: i
+              });
+            }}
+            on:dblclick={(event) => {
+              dispatch('onVirtualTableRowCellDoubleClick', {
+                columnIndex: j,
+                rowIndex: i
+              });
+            }}
+          >
             {#if column.cellComponent}
-              <div
-                on:click={(event) => {
-                  dispatch('onVirtualTableRowCellClick', {
-                    columnIndex: j,
-                    rowIndex: i
-                  });
-                }}
-                on:dblclick={(event) => {
-                  dispatch('onVirtualTableRowCellDoubleClick', {
-                    columnIndex: j,
-                    rowIndex: i
-                  });
-                }}
-              >
-                <svelte:component
-                  this={column.cellComponent}
-                  {...column}
-                  {...row}
-                />
-              </div>
+            <svelte:component
+              this={column.cellComponent}
+              {...column}
+              {...row}
+              on:change={(event) => {
+                console.log('{}VirtualTable::svelte component::on change::event=', event);
+              }}
+            />
             {:else}
               <div class="cell-default">{row.data[column.dataName] || ''}</div>
             {/if}

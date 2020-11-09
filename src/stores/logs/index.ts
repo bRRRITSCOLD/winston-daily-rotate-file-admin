@@ -26,11 +26,9 @@ import { LOGS_STORE_KEY } from "./keys";
 function createLogsStore() {
   // get persisted item
   const storedLogsStore = JSON.parse(sessionStorage.getItem(LOGS_STORE_KEY));
-  console.log('storedLogsStore=', storedLogsStore);
   // create writable
   const { subscribe, update, set } = writable(assign({}, initialLogsStoreState, _.isObject(storedLogsStore) ? storedLogsStore : {}));
   subscribe(value => {
-    console.log('logStoreSubscribe=', value);
     sessionStorage.setItem(LOGS_STORE_KEY, JSON.stringify(value));
   });
 

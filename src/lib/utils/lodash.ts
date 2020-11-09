@@ -24,7 +24,6 @@ _.mixin({
       // return the new array explicitly
       return copy;
     } catch (err) {
-      console.log('lodash.mixin.replaceOne error=', err);
       throw err
     }
   }
