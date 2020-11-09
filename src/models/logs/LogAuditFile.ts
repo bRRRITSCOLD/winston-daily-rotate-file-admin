@@ -40,31 +40,31 @@ export class LogAuditFileLogFile implements LogAuditFileLogFileInterface {
 
 export interface LogAuditFileInterface {
   id: string;
-  directory: string;
+  updatedLogAuditFiles: string;
   keep: {
     days?: boolean;
     amount: number;
   },
-  auditlog: string;
-  logFiles: LogAuditFileLogFileInterface[];
+  auditLog: string;
+  logFiles?: LogAuditFileLogFileInterface[];
 }
 
 export class LogAuditFile implements LogAuditFileInterface {
   public id!: string;
-  public directory!: string;
+  public updatedLogAuditFiles!: string;
   public keep!: {
     days?: boolean;
     amount: number;
   };
-  public auditlog!: string;
-  public logFiles!: LogAuditFileLogFile[];
+  public auditLog!: string;
+  public logFiles?: LogAuditFileLogFile[];
 
   public constructor(logAuditFile: LogAuditFileInterface) {
     assign(this, logAuditFile, {
       id: get(logAuditFile, 'id', uuid()),
-      directory: get(logAuditFile, 'directory'),
+      updatedLogAuditFiles: get(logAuditFile, 'updatedLogAuditFiles'),
       keep: get(logAuditFile, 'keep'),
-      auditlog: get(logAuditFile, 'auditlog'),
+      auditLog: get(logAuditFile, 'auditLog'),
       logFiles: get(logAuditFile, 'logFiles')
     });
   }

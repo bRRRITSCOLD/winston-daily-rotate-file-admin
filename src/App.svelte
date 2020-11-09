@@ -1,9 +1,10 @@
 <script lang="ts">
-import { map } from 'lodash';
-
   // node_modules
   import { onMount } from 'svelte';
   import Router, { location, push, querystring, link } from 'svelte-spa-router';
+
+  // libraries
+  import { _ } from './lib/utils';
 
   // components
   import NavigationBar from "./components/UI/Navigation/NavigationBar.svelte";
@@ -21,20 +22,21 @@ import { map } from 'lodash';
     .reduce((crumbs: any[], locationPart: string, locationPartIndex: number) => {
       if (
         locationPart !== ''
-        && ['logs', 'details', 'search'].includes(locationPart)
+        && ['log-groups', 'details', 'search'].includes(locationPart)
       ) {
         crumbs.push({
-          label: locationPart.toUpperCase(),
+          label: _.words(locationPart.toUpperCase()).join(' '),
           link: splitLocation.slice(0, locationPartIndex + 1).join('/'),
           disabled: locationPartIndex + 1 === splitLocation.length
         });
       }
+      console.log(crumbs)
       return crumbs;
     }, []);
 
   onMount(() => {
     if ($location === '/') {
-      push('/logs');
+      push('/log-groups');
     }
     })
 </script>
