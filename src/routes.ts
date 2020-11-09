@@ -1,14 +1,14 @@
 // Components
-import Logs from './pages/Logs.svelte'
-import LogDetail from './pages/LogDetails.svelte'
-import LogSearch from './pages/LogSearch.svelte'
+import LogGroups from './pages/LogGroups.svelte'
+import LogGroupDetails from './pages/LogGroupDetails.svelte'
+import LogGroupSearch from './pages/LogGroupSearch.svelte'
 
 // Export the route definition object
 export default {
     // Exact path
-    '/logs': Logs,
+    '/log-groups': LogGroups,
 
     // Using named parameter
-    '/logs/:logAuditFileId/details': LogDetail,
-    '/logs/:logAuditFileId/search': LogSearch
+    '/log-groups/:logGroupAuditFileId/details': LogGroupDetails,
+    '/log-groups/:logGroupAuditFileId/search': LogGroupSearch
 }
