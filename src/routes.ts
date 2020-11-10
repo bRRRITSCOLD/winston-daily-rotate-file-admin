@@ -9,6 +9,6 @@ export default {
     '/log-groups': LogGroups,
 
     // Using named parameter
-    '/log-groups/:logGroupAuditFileId/details': LogGroupDetails,
-    '/log-groups/:logGroupAuditFileId/search': LogGroupSearch
+    '/log-groups/:logGroupId/details': LogGroupDetails,
+    '/log-groups/:logGroupId/search': LogGroupSearch
 }

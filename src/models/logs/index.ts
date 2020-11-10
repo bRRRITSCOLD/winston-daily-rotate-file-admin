@@ -1,1 +1,1 @@
-export * from './LogAuditFile';
+export * from './LogGroup';

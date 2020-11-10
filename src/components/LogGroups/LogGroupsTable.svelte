@@ -14,7 +14,7 @@
 	import VirtualTable from '../UI/Table/VirtualTable.svelte';
 
   // props
-  export let logGroups: { id: string; auditLog: string }[] = [];
+  export let logGroups: { logGroupId: string; auditLog: string }[] = [];
 
   // file constants
   const dispatch = createEventDispatcher();

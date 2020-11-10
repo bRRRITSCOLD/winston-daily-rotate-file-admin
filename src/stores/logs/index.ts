@@ -8,7 +8,7 @@ import { get as _get, assign } from 'lodash';
 import { _ } from '../../lib/utils';
 
 // models
-import type { LogAuditFile, LogAuditFileInterface, LogAuditFileLogFileInterface } from '../../models';
+import { LogGroup, LogGroupInterface, LogGroupFileInterface } from '../../models';
 
 // services
 import {
@@ -43,15 +43,15 @@ function createLogsStore() {
     //     // read the directory
     //     const logDirectoryFiles = await directoriesService.readDir(logDirectory);
     //     // no filter/reduce down the results
-    //     const logAuditFile = logDirectoryFiles.reduce((auditFile: any, file: tauriFs.FileEntry) => {
+    //     const logGroup = logDirectoryFiles.reduce((auditFile: any, file: tauriFs.FileEntry) => {
     //       if (_get(_get(file, 'name', '').split('.').slice(-1), '[0]', '').toUpperCase() === 'JSON') {
     //         auditFile = assign({}, file, { logDirectory });
     //       }
     //       return auditFile;
     //     }, undefined);
     //     // read the audit file
-    //     const readLogAuditFile = await filesService.readTextFile(logAuditFile.path);
-    //     const parsedReadLogAuditFile: any = JSON.parse(readLogAuditFile);
+    //     const readLogGroup = await filesService.readTextFile(logGroup.path);
+    //     const parsedReadLogGroup: any = JSON.parse(readLogGroup);
     //     // now let us take the data from the readDir
     //     // operation from above and merge it with the
     //     // log files under each auditLogFile
@@ -59,17 +59,17 @@ function createLogsStore() {
     //     update(
     //       state => {
     //         const updatedData = {
-    //           logAuditFiles: _.replaceOne(
-    //             { auditLog: parsedReadLogAuditFile.auditLog },
-    //             state.logAuditFiles,
+    //           logGroups: _.replaceOne(
+    //             { auditLog: parsedReadLogGroup.auditLog },
+    //             state.logGroups,
     //             assign(
     //               {},
-    //               parsedReadLogAuditFile, 
+    //               parsedReadLogGroup, 
     //               {
-    //                 path: parsedReadLogAuditFile.path,
+    //                 path: parsedReadLogGroup.path,
     //                 directory: logDirectory,
     //                 id: uuid(),
-    //                 logFiles: parsedReadLogAuditFile.files.map((file: LogAuditFileLogFileInterface) => {
+    //                 logFiles: parsedReadLogGroup.files.map((file: LogGroupFileInterface) => {
     //                   // first find the log audit file log file
     //                   // that correlates to each file returned
     //                   // from the above readDir call
@@ -107,17 +107,17 @@ function createLogsStore() {
       // ask user for log audit files
       const fileNames: string[] = await filesService.getFileNames();
       // filter out only audit files
-      const logAuditFileNames = fileNames
+      const logGroupNames = fileNames
         .filter((fileName: string) => fileName.toLowerCase().endsWith('-audit.json'));
       // map over each file selected and read them
-      const readLogAuditFiles = await Promise.all(
-        logAuditFileNames
-          .map(async (logAuditFile: string) => {
+      const readLogGroups = await Promise.all(
+        logGroupNames
+          .map(async (logGroup: string) => {
             // read a single file
-            const readLogAuditFile = await filesService.readTextFile(logAuditFile);
-            console.log(JSON.stringify(JSON.parse(readLogAuditFile), undefined, 2));
+            const readLogGroup = await filesService.readTextFile(logGroup);
+            console.log(JSON.stringify(JSON.parse(readLogGroup), undefined, 2));
             // parse and return
-            return JSON.parse(readLogAuditFile);
+            return JSON.parse(readLogGroup);
           })
       );
       // update store
@@ -125,39 +125,36 @@ function createLogsStore() {
         state => {
           // for each read audit file
           // replace it in the current state
-          let updatedLogAuditFiles = state.logGroups.slice();
-          for (const [readLogAuditFileIndex, readLogAuditFile] of readLogAuditFiles.entries()) {
-            const splitLogAuditFileName = logAuditFileNames[readLogAuditFileIndex].split('/');
+          let updatedLogGroups = state.logGroups.slice();
+          for (const [readLogGroupIndex, readLogGroup] of readLogGroups.entries()) {
+            const splitLogGroupName = logGroupNames[readLogGroupIndex].split('/');
             // remove log aufit file name - we need dir name
-            splitLogAuditFileName.pop();
+            splitLogGroupName.pop();
             // replace in state
-            updatedLogAuditFiles = _.replaceOne(
-              { auditLog: readLogAuditFile.auditLog },
-              updatedLogAuditFiles,
+            updatedLogGroups = _.replaceOne(
+              { auditLog: readLogGroup.auditLog },
+              updatedLogGroups,
               assign(
                 {},
-                readLogAuditFile, 
+                readLogGroup, 
                 {
-                  path: readLogAuditFile.path,
-                  directoryPath: splitLogAuditFileName.join('/'),
-                  id: uuid()
+                  directoryPath: splitLogGroupName.join('/'),
+                  logGroupId: uuid()
                 }
               )
-            ) 
+            ); 
           }
-          console.log('updatedLogAuditFiles=', updatedLogAuditFiles);
           // create new state
           const newState = _.assign(
             {},
             state,
-            { logGroups: updatedLogAuditFiles }
+            { logGroups: updatedLogGroups.map((logGroup) => new LogGroup(logGroup)) }
           );
-          console.log('newState=', newState);
           // return new state
           return _.assign({}, newState);
         }
       );
-      // console.log(readLogAuditFiles);
+      // console.log(readLogGroups);
     }
   };
 }

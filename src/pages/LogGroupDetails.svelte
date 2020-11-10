@@ -1,31 +1,54 @@
-<!-- <script lang="ts">
-  // node_modules
-  import { push } from 'svelte-spa-router'
+<script lang="ts">
+    // node_modules
+    // import { push } from 'svelte-spa-router'
+  
+    // libraries
+    import { _ } from '../lib/utils';
 
-  // components
-  import LogDirectoryDetailsTable from '../components/LogDirectory/LogDirectoryDetailsTable.svelte';
+    // components
+  import LogGroupDetailsTable from '../components/LogGroup/LogGroupDetailsTable.svelte';
+  
+    // stores
+    import { logsStore } from '../stores/logs';
+import type { LogGroupFile } from '../models';
+  
+    // props
+    export let params: any = {};
+  
+    // reactive vars
+    let selectedLogGroupFiles = [];
+    $: selectedLogGroupFiles;
 
-  // stores
-  import { logsStore } from '../stores/logs';
-
-  // props
-  export let params: any = {};
-</script>
-
-<main>
-  <div class="flex-box-column">
-    <LogDirectoryDetailsTable
-      logDirectoryFiles={$logsStore.logGroups}
-      on:onTableSelectedRowCellClick={(event) => {
-        // find the log audit file clicked on
-        const clickedLogAudigFile = $logsStore.logGroups[event.detail.rowIndex];
-        console.log(clickedLogAudigFile)
-        // route to correct details page
-        push(`/logs/${clickedLogAudigFile.id}/details`);
-      }}
-    />
-  </div>
-</main>
-
-
-<style></style> -->
+    let logGroupFiles = [];
+    // @ts-ignore
+    $: logGroupFiles = _.get($logsStore.logGroups.find((logGroup) => logGroup.logGroupId === params.logGroupId), 'files', [] as LogGroupFile[]).map((file) => {
+      // check to see if the item is currently selected
+      const foundSelectedLogGroupFile = selectedLogGroupFiles.find((selectedLogGroupFile: string) => selectedLogGroupFile === file.logGroupFileId)
+      // if it is selected then set to true
+      if (foundSelectedLogGroupFile) {
+        file.selected = true;
+      // else set to false
+      } else {
+        file.selected = false;
+      }
+      return file;
+    });
+  </script>
+  
+  <main>
+    <div class="flex-box-column">
+      <LogGroupDetailsTable
+        logGroupFiles={logGroupFiles}
+        on:onAddButtonClick={async () => {
+          await logsStore.addLogGroups();
+        }}
+        on:onTableLogGroupRowCellClick={(event) => {
+          console.log(event)
+        }}
+      />
+    </div>
+  </main>
+  
+  
+  <style></style>
+  

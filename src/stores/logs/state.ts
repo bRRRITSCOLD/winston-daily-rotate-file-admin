@@ -1,8 +1,8 @@
 // models
-import type { LogAuditFile } from '../../models';
+import type { LogGroup } from '../../models';
 
 export interface LogStoreStateInterface {
-  logGroups: LogAuditFile[];
+  logGroups: LogGroup[];
 }
 
 export const initialLogsStoreState: LogStoreStateInterface = {
