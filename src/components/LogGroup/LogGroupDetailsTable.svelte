@@ -14,7 +14,7 @@
 	import VirtualTable from '../UI/Table/VirtualTable.svelte';
 
   // props
-  export let logGroupFiles: { selected: boolean; date: number; name: string; hash: string }[] = [];
+  export let logGroupFiles: { selected?: boolean; date: number; name: string; hash: string }[] = [];
 
   // file constants
   const dispatch = createEventDispatcher();
@@ -77,7 +77,7 @@
         columns={virtualTableColumns}
         on:onVirtualTableRowCellClick={(event) => {
           if (event.detail.columnIndex === 0) {
-            dispatch('onTableLogGroupRowCellClick', { rowIndex: event.detail.rowIndex });
+            dispatch('onTableRowSelectedCellClick', { rowIndex: event.detail.rowIndex });
           }
         }}
       />

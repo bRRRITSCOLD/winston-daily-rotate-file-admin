@@ -56,7 +56,7 @@
         columns={virtualTableColumns}
         on:onVirtualTableRowCellClick={(event) => {
           if (event.detail.columnIndex === 0) {
-            dispatch('onTableLogGroupRowCellClick', { rowIndex: event.detail.rowIndex });
+            dispatch('onTableRowLogGroupCellClick', { rowIndex: event.detail.rowIndex });
           }
         }}
       />

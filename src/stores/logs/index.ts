@@ -27,15 +27,15 @@ function createLogsStore() {
   // get persisted item
   const storedLogsStore = JSON.parse(sessionStorage.getItem(LOGS_STORE_KEY));
   // create writable
-  const { subscribe, update, set } = writable(assign({}, initialLogsStoreState, _.isObject(storedLogsStore) ? storedLogsStore : {}));
-  subscribe(value => {
+  const _logsStore = writable(assign({}, initialLogsStoreState, _.isObject(storedLogsStore) ? storedLogsStore : {}));
+  _logsStore.subscribe(value => {
     sessionStorage.setItem(LOGS_STORE_KEY, JSON.stringify(value));
   });
 
   return {
-    update,
-    subscribe,
-    reset: () => set(initialLogsStoreState),
+    update: _logsStore.update,
+    subscribe: _logsStore.subscribe,
+    reset: () => _logsStore.set(initialLogsStoreState),
     // addLogGroups: async () => {
     //   try {
     //     // ask user for log files directory
@@ -121,7 +121,7 @@ function createLogsStore() {
           })
       );
       // update store
-      update(
+      _logsStore.update(
         state => {
           // for each read audit file
           // replace it in the current state
@@ -161,7 +161,13 @@ function createLogsStore() {
 
 const logsStore = createLogsStore();
 
-export { logsStore };
+const allLogGroupsFiles = derived(
+  logsStore,
+  ($logsStore) => {
+    return _.flatten($logsStore.logGroups.map(logGroup => logGroup.files as any[]))
+  }
+)
+export { logsStore, allLogGroupsFiles };
 
 // /* computed values */
 // export const getTotalHeroes = derived(

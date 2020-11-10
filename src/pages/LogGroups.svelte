@@ -26,7 +26,7 @@
       on:onAddButtonClick={async () => {
         await logsStore.addLogGroups();
       }}
-      on:onTableLogGroupRowCellClick={(event) => {
+      on:onTableRowLogGroupCellClick={(event) => {
         // find the log audit file clicked on
         const clickedLogAudigFile = $logsStore.logGroups[event.detail.rowIndex];
         console.log(clickedLogAudigFile)
