@@ -264,7 +264,7 @@ bind:this={wrapper}
             on:click={(event) => {
               dispatch('onVirtualTableRowCellClick', {
                 columnIndex: j,
-                rowIndex: i
+                rowIndex: row.i
               });
             }}
             on:dblclick={(event) => {

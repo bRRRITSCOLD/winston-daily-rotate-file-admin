@@ -161,13 +161,14 @@ function createLogsStore() {
 
 const logsStore = createLogsStore();
 
-const allLogGroupsFiles = derived(
+const logGroupsFiles = derived(
   logsStore,
   ($logsStore) => {
     return _.flatten($logsStore.logGroups.map(logGroup => logGroup.files as any[]))
   }
-)
-export { logsStore, allLogGroupsFiles };
+);
+
+export { logsStore, logGroupsFiles };
 
 // /* computed values */
 // export const getTotalHeroes = derived(

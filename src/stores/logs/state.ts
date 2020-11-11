@@ -3,7 +3,7 @@ import type { LogGroup, LogGroupFile } from '../../models';
 
 export interface LogStoreStateInterface {
   logGroups: LogGroup[];
-  allLogGroupsFiles?: LogGroupFile[];
+  logGroupsFiles?: LogGroupFile[];
 }
 
 export const initialLogsStoreState: LogStoreStateInterface = {
