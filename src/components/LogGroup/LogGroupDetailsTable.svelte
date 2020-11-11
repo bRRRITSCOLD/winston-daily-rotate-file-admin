@@ -9,7 +9,8 @@
   // models
 
   // components
-  import LogGroupDetailsTableRowCell from './LogGroupDetailsTableRowCell.svelte';
+  import LogGroupDetailsTableRowDefaultCell from './LogGroupDetailsTableRowDefaultCell.svelte';
+  import LogGroupDetailsTableRowCheckboxCell from "./LogGroupDetailsTableRowCheckboxCell.svelte";
   import LogGroupDetailsTableHeaderCell from './LogGroupDetailsTableHeaderCell.svelte';
 	import VirtualTable from '../UI/Table/VirtualTable.svelte';
 
@@ -28,28 +29,28 @@
       display: 'Selected',  // What will be displayed as the column header
       dataName: 'selected',  // The key of a row to get the column's data from
       width: virtualTableWidth * .10,
-      cellComponent: LogGroupDetailsTableRowCell,
+      cellComponent: LogGroupDetailsTableRowCheckboxCell,
       headerComponent: LogGroupDetailsTableHeaderCell
     },
     {
       display: 'Date',  // What will be displayed as the column header
       dataName: 'date',  // The key of a row to get the column's data from
       width: virtualTableWidth * .20,
-      cellComponent: LogGroupDetailsTableRowCell,
+      cellComponent: LogGroupDetailsTableRowDefaultCell,
       headerComponent: LogGroupDetailsTableHeaderCell
     },
     {
       display: 'Hash',  // What will be displayed as the column header
       dataName: 'hash',  // The key of a row to get the column's data from
       width: virtualTableWidth * .35,
-      cellComponent: LogGroupDetailsTableRowCell,
+      cellComponent: LogGroupDetailsTableRowDefaultCell,
       headerComponent: LogGroupDetailsTableHeaderCell
     },
     {
       display: 'Name',  // What will be displayed as the column header
       dataName: 'name',  // The key of a row to get the column's data from
       width: virtualTableWidth * .35,
-      cellComponent: LogGroupDetailsTableRowCell,
+      cellComponent: LogGroupDetailsTableRowDefaultCell,
       headerComponent: LogGroupDetailsTableHeaderCell
     }
   ];
