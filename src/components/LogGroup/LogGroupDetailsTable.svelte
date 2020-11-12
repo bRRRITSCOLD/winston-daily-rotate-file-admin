@@ -84,4 +84,9 @@
       />
     </div>
   </div>
+  <div class="flex-box-row justify-content-flex-end" style="padding-top: 10px; padding-right: 10px; padding-left: 10px; width: 100%;">
+      <Button on:click={() => {
+        dispatch('onSearchButtonClick', true);
+      }} class="primary-color">Search</Button>
+  </div>
 </Card>

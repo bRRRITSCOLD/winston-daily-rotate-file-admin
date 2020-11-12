@@ -10,5 +10,5 @@ export default {
 
     // Using named parameter
     '/log-groups/:logGroupId/details': LogGroupDetails,
-    '/log-groups/:logGroupId/search': LogGroupSearch
+    '/log-groups/:logGroupId/details/search': LogGroupSearch
 }

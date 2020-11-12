@@ -26,7 +26,7 @@
       ) {
         crumbs.push({
           label: _.words(locationPart.toUpperCase()).join(' '),
-          link: splitLocation.slice(0, locationPartIndex + 1).join('/'),
+          link: `${splitLocation.slice(0, locationPartIndex + 1).join('/')}${$querystring ? `?${$querystring}` : ''}`,
           disabled: locationPartIndex + 1 === splitLocation.length
         });
       }

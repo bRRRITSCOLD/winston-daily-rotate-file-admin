@@ -36,73 +36,6 @@ function createLogsStore() {
     update: _logsStore.update,
     subscribe: _logsStore.subscribe,
     reset: () => _logsStore.set(initialLogsStoreState),
-    // addLogGroups: async () => {
-    //   try {
-    //     // ask user for log files directory
-    //     const logDirectory: string = await directoriesService.getDirectoryName();
-    //     // read the directory
-    //     const logDirectoryFiles = await directoriesService.readDir(logDirectory);
-    //     // no filter/reduce down the results
-    //     const logGroup = logDirectoryFiles.reduce((auditFile: any, file: tauriFs.FileEntry) => {
-    //       if (_get(_get(file, 'name', '').split('.').slice(-1), '[0]', '').toUpperCase() === 'JSON') {
-    //         auditFile = assign({}, file, { logDirectory });
-    //       }
-    //       return auditFile;
-    //     }, undefined);
-    //     // read the audit file
-    //     const readLogGroup = await filesService.readTextFile(logGroup.path);
-    //     const parsedReadLogGroup: any = JSON.parse(readLogGroup);
-    //     // now let us take the data from the readDir
-    //     // operation from above and merge it with the
-    //     // log files under each auditLogFile
-    //     // set log audit files in store
-    //     update(
-    //       state => {
-    //         const updatedData = {
-    //           logGroups: _.replaceOne(
-    //             { auditLog: parsedReadLogGroup.auditLog },
-    //             state.logGroups,
-    //             assign(
-    //               {},
-    //               parsedReadLogGroup, 
-    //               {
-    //                 path: parsedReadLogGroup.path,
-    //                 directory: logDirectory,
-    //                 id: uuid(),
-    //                 logFiles: parsedReadLogGroup.files.map((file: LogGroupFileInterface) => {
-    //                   // first find the log audit file log file
-    //                   // that correlates to each file returned
-    //                   // from the above readDir call
-    //                   const foundReadDirFile = logDirectoryFiles.find((logDirectoryFile) => logDirectoryFile.path.includes(file.name));
-    //                   console.log('foundReadDirFile=', foundReadDirFile);
-    //                   return assign(
-    //                     {},
-    //                     file,
-    //                     {
-    //                       path: foundReadDirFile?.path
-    //                     }
-    //                   )
-    //                 })
-    //               }
-    //             )
-    //           ) 
-    //         };
-    //         console.log('updatedData=', updatedData);
-    //         // create new state
-    //         const newState = _.assign(
-    //           {},
-    //           state,
-    //           updatedData
-    //         );
-    //         console.log('newState=', newState);
-    //         // return new state
-    //         return _.assign({}, newState);
-    //       }
-    //     );
-    //   } catch (err) {
-        
-    //   }
-    // },
     addLogGroups: async () => {
       // ask user for log audit files
       const fileNames: string[] = await filesService.getFileNames();
@@ -155,20 +88,21 @@ function createLogsStore() {
         }
       );
       // console.log(readLogGroups);
+    },
+    parseLogGroupFiles: async (logGroupFilePaths: string[]) => {
+      try {
+        console.log('logGroupFilePaths=', logGroupFilePaths);
+      } catch (err) {
+        console.log(err);
+        throw err;
+      }
     }
   };
 }
 
 const logsStore = createLogsStore();
 
-const logGroupsFiles = derived(
-  logsStore,
-  ($logsStore) => {
-    return _.flatten($logsStore.logGroups.map(logGroup => logGroup.files as any[]))
-  }
-);
-
-export { logsStore, logGroupsFiles };
+export { logsStore };
 
 // /* computed values */
 // export const getTotalHeroes = derived(
