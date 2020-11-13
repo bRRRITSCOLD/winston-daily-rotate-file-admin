@@ -13,6 +13,7 @@
   import LogGroupDetailsTableRowCheckboxCell from "./LogGroupDetailsTableRowCheckboxCell.svelte";
   import LogGroupDetailsTableHeaderCell from './LogGroupDetailsTableHeaderCell.svelte';
 	import VirtualTable from '../UI/Table/VirtualTable.svelte';
+import LogGroupDetailsTableRowDateCell from "./LogGroupDetailsTableRowDateCell.svelte";
 
   // props
   export let logGroupFiles: { selected?: boolean; date: number; name: string; hash: string }[] = [];
@@ -36,7 +37,7 @@
       display: 'Date',  // What will be displayed as the column header
       dataName: 'date',  // The key of a row to get the column's data from
       width: virtualTableWidth * .20,
-      cellComponent: LogGroupDetailsTableRowDefaultCell,
+      cellComponent: LogGroupDetailsTableRowDateCell,
       headerComponent: LogGroupDetailsTableHeaderCell
     },
     {
@@ -57,7 +58,7 @@
 </script>
 
 <Card>
-  <div class="flex-box-row justify-content-flex-end" style="padding-top: 10px;">
+  <div class="d-flex flex-row justify-end" style="padding-top: 10px;">
     <div style="padding-right: 10px; padding-left: 10px; width: 90%;">
       <TextField>Filter</TextField>
     </div>
@@ -65,7 +66,7 @@
       <Button class="primary-color">Apply</Button>
     </div>
   </div>
-  <div class="flex-box-row justify-content-space-around">
+  <div class="fd-flex flex-row justify-space-around">
     <div
       style="height: calc(100vh - 15em); min-height: 200px; width: calc(100vw - 2em); padding-top: 10px;"
       use:watchResize={(node) => {
@@ -84,7 +85,7 @@
       />
     </div>
   </div>
-  <div class="flex-box-row justify-content-flex-end" style="padding-top: 10px; padding-right: 10px; padding-left: 10px; width: 100%;">
+  <div class="d-flex flex-row justify-end" style="padding-top: 10px; padding-right: 10px; padding-left: 10px; width: 100%;">
       <Button on:click={() => {
         dispatch('onSearchButtonClick', true);
       }} class="primary-color">Search</Button>

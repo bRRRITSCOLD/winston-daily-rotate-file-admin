@@ -2,6 +2,7 @@
   // node_modules
   import { onMount } from 'svelte';
   import Router, { location, push, querystring, link } from 'svelte-spa-router';
+  import { MaterialApp } from 'svelte-materialify/src';
 
   // libraries
   import { _ } from './lib/utils';
@@ -41,10 +42,12 @@
     })
 </script>
 
-<div style="padding-bottom: 20px;">
-  <NavigationBar crumbs={navigationBarCrumbs} />
-</div>
-<Router {routes}/>
+<MaterialApp>
+  <div style="padding-bottom: 20px;">
+    <NavigationBar crumbs={navigationBarCrumbs} />
+  </div>
+  <Router {routes}/>
+</MaterialApp>
 
 <style>
   :global(.flex-box-column) {

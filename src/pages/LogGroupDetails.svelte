@@ -30,7 +30,7 @@
 </script>
 
 <main>
-  <div class="flex-box-column">
+  <div class="d-flex flex-column">
     <LogGroupDetailsTable
       logGroupFiles={logGroupFiles}
       on:onTableRowSelectedCellClick={(event) => {

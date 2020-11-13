@@ -9,6 +9,7 @@ export interface LogGroupFileInterface {
   name: string;
   hash: string;
   selected?: boolean;
+  path?: string;
   data?: {
     level: string;
     message: string;
@@ -21,6 +22,7 @@ export class LogGroupFile implements LogGroupFileInterface {
   public name!: string;
   public hash!: string;
   public selected?: boolean;
+  public path?: string;
   public data?: {
     level: string;
     message: string;

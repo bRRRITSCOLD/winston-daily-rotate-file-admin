@@ -1,6 +1,6 @@
 import type { AnyObject } from "../models";
 
-export function parseLogGroupFile(logGroupFile: string): AnyObject {
+export function parseLogGroupFile(logGroupFile: string): { level: string; message: string; }[] {
   /// parse log group file
   const parsedLogFile = logGroupFile
     .split('\n')
@@ -11,7 +11,7 @@ export function parseLogGroupFile(logGroupFile: string): AnyObject {
   return parsedLogFile;
 }
 
-export function parseLogGroupFiles(logGroupFiles: string[]): AnyObject {
+export function parseLogGroupFiles(logGroupFiles: string[]): { level: string; message: string; }[][] {
   /// parse the log group files
   const parsedLogFiles = logGroupFiles.map((logGroupFile) => parseLogGroupFile(logGroupFile));
   // explicitly return the

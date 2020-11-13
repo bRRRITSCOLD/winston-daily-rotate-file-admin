@@ -8,7 +8,7 @@ import { get as _get, assign } from 'lodash';
 import { _ } from '../../lib/utils';
 
 // models
-import { LogGroup, LogGroupInterface, LogGroupFileInterface } from '../../models';
+import { LogGroup, LogGroupInterface, LogGroupFileInterface, LogGroupFile } from '../../models';
 
 // services
 import {
@@ -89,13 +89,77 @@ function createLogsStore() {
       );
       // console.log(readLogGroups);
     },
-    parseLogGroupFiles: async (logGroupFilePaths: string[]) => {
-      try {
-        console.log('logGroupFilePaths=', logGroupFilePaths);
-      } catch (err) {
-        console.log(err);
-        throw err;
-      }
+    parseLogGroupFiles: async (logGroup: LogGroup) => {
+      // try {
+      //   console.log('logGrou', logGroup)
+      //   // read directory - we do this to
+      //   // determine the file type of
+      //   // each file passed in
+      //   const readDirectory = await directoriesService.readDir(logGroup.directoryPath);
+      //   // filter out the files not
+      //   // given for parsing
+      //   const selectedFiles = readDirectory.reduce((selectedFls: LogGroupFile[], fl: any) => {
+      //     console.log('fl=', fl)
+      //     const foundLogGroupFile = logGroup.files.find((file) => {
+      //       console.log('file=', file)
+      //       return file.path == fl.path
+      //     });
+      //     console.log('foundLogGroupFile=', foundLogGroupFile)
+      //     if (foundLogGroupFile) {
+      //       selectedFls.push(_.assign({}, foundLogGroupFile, { path: fl.path }));
+      //     }
+      //     return selectedFls;
+      //   }, []);
+      //   // read and parse the files based
+      //   // on the type of file they are -
+      //   // gzipped or regular .log/.txt files
+      //   const parsedSelectedFiles = await Promise.all(selectedFiles.map(async (selectedFile: LogGroupFile) => {
+      //     // based on the file type read it,
+      //     // parse it and store it
+      //     if (!selectedFile.path.toLowerCase().includes('.gz')) {
+      //       const readFile = await filesService.readTextFile(selectedFile.path);
+      //       const parsedFile = logsService.parseLogGroupFile(readFile);
+      //       selectedFile.data = parsedFile;
+      //     } else {
+      //       const readFile = await filesService.decodeGzFile(selectedFile.path);
+      //       const parsedFile = logsService.parseLogGroupFile(readFile);
+      //       selectedFile.data = parsedFile;
+      //     }
+      //     return selectedFile;
+      //   }));
+      //   console.log('parsedSelectedFiles=', parsedSelectedFiles)
+      //   // create new log group files array
+      //   const newLogGroupFiles = logGroup.files.map((file: LogGroupFile) => {
+      //     const foundParsedSelectedFile = parsedSelectedFiles.find((parsedSelectedFile) => parsedSelectedFile.logGroupFileId === file.logGroupFileId);
+      //     console.log('foundParsedSelectedFile=', foundParsedSelectedFile)
+      //     if (foundParsedSelectedFile) {
+      //       return foundParsedSelectedFile;
+      //     } else {
+      //       return file;
+      //     }
+      //   });
+      //   // replace logGroups state currently
+      // _logsStore.update(
+      //   state => {
+      //     const newLogGroups = state.logGroups.map((logGrp) => {
+      //       if (logGrp.logGroupId === logGroup.logGroupId) {
+      //         return _.assign({}, logGroup, { files: newLogGroupFiles })
+      //       } else {
+      //         return logGrp;
+      //       }
+      //     })
+      //     console.log('newLogGroups=', newLogGroups)
+      //     return _.assign({}, state, { logGroups: newLogGroups });
+      //   }
+      // );
+      //   console.log('parsedSelectedFiles=', parsedSelectedFiles);
+      //   // console.log('readDirectory=', readDirectory);
+      //   // console.log('selectedFiles=', selectedFiles);
+      //   // console.log('parseLogGroupFilesRequest=', parseLogGroupFilesRequest);
+      // } catch (err) {
+      //   console.log(err);
+      //   throw err;
+      // }
     }
   };
 }

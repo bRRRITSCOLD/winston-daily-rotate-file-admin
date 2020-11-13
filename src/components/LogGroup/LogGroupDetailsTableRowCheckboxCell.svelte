@@ -19,6 +19,7 @@
 </script>
 
 <div
+  class="d-flex justify-center"
   style="height: 100%; width: 100%; background: {background}; cursor: pointer;"
   on:mouseover={() => { background = 'lightgray' }}
   on:mouseleave={() => { background = 'white' }}

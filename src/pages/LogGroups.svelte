@@ -20,7 +20,7 @@
 </script>
 
 <main>
-  <div class="flex-box-column">
+  <div class="d-flex flex-column">
     <LogGroupsTable
       logGroups={$logsStore.logGroups}
       on:onAddButtonClick={async () => {

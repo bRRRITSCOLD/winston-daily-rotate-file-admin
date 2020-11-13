@@ -8,7 +8,7 @@
   import { _ } from '../lib/utils';
 
   // models
-  import type { AnyObject, LogGroupFile } from '../models';
+  import type { AnyObject, LogGroup, LogGroupFile } from '../models';
 
   // components
   import LogGroupDetailsTable from '../components/LogGroup/LogGroupDetailsTable.svelte';
@@ -23,7 +23,7 @@
   let parsedQuerystring;
   $: parsedQuerystring = qs.parse($querystring);
 
-  let logGroup;
+  let logGroup: LogGroup;
   $: logGroup = $logsStore.logGroups.slice().find((logGroup) => logGroup.logGroupId === params.logGroupId);
   $: console.log(logGroup);
 
@@ -44,7 +44,7 @@
   onMount(async () => {
     if (logGroup) {
       // console.log(selectedLogGroupFiles.map((selectedLogGroupFile) => `${logGroup.directoryPath}/${selectedLogGroupFile.name.split('/').slice(-1)[0]}`));
-      await logsStore.parseLogGroupFiles(selectedLogGroupFiles.map((selectedLogGroupFile) => `${logGroup.directoryPath}/${selectedLogGroupFile.name.split('/').slice(-1)[0]}`));
+      await logsStore.parseLogGroupFiles(logGroup);
     }
   });
 </script>
