@@ -11,9 +11,9 @@
   // components
   import LogGroupDetailsTableRowDefaultCell from './LogGroupDetailsTableRowDefaultCell.svelte';
   import LogGroupDetailsTableRowCheckboxCell from "./LogGroupDetailsTableRowCheckboxCell.svelte";
+  import LogGroupDetailsTableRowDateCell from "./LogGroupDetailsTableRowDateCell.svelte";
   import LogGroupDetailsTableHeaderCell from './LogGroupDetailsTableHeaderCell.svelte';
 	import VirtualTable from '../UI/Table/VirtualTable.svelte';
-import LogGroupDetailsTableRowDateCell from "./LogGroupDetailsTableRowDateCell.svelte";
 
   // props
   export let logGroupFiles: { selected?: boolean; date: number; name: string; hash: string }[] = [];
@@ -58,14 +58,14 @@ import LogGroupDetailsTableRowDateCell from "./LogGroupDetailsTableRowDateCell.s
 </script>
 
 <Card>
-  <div class="d-flex flex-row justify-end" style="padding-top: 10px;">
+  <!-- <div class="d-flex flex-row justify-end" style="padding-top: 10px;">
     <div style="padding-right: 10px; padding-left: 10px; width: 90%;">
       <TextField>Filter</TextField>
     </div>
     <div class="text-align-right" style="padding-right: 10px; padding-left: 10px;">
       <Button class="primary-color">Apply</Button>
     </div>
-  </div>
+  </div> -->
   <div class="fd-flex flex-row justify-space-around">
     <div
       style="height: calc(100vh - 15em); min-height: 200px; width: calc(100vw - 2em); padding-top: 10px;"

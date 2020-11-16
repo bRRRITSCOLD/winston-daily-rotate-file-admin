@@ -15,6 +15,7 @@
 
   // stores
   import { logsStore } from '../stores/logs';
+import LogGroupSearchTable from '../components/LogGroup/LogGroupSearchTable.svelte';
 
   // props
   export let params: any = {};
@@ -25,33 +26,59 @@
 
   let logGroup: LogGroup;
   $: logGroup = $logsStore.logGroups.slice().find((logGroup) => logGroup.logGroupId === params.logGroupId);
-  $: console.log(logGroup);
+  // $: console.log(logGroup);
 
   let logGroupFiles = [];
   $: logGroupFiles = _.get(logGroup, 'files', []);
-  $: console.log(logGroupFiles);
+  // $: console.log(logGroupFiles);
 
   let selectedLogGroupFiles = [];
   $: selectedLogGroupFiles = logGroupFiles.filter((logGroupFile) => parsedQuerystring.logGroupFileIds.split(',').includes(logGroupFile.logGroupFileId));
-  $: console.log(selectedLogGroupFiles);
+  // $: console.log(selectedLogGroupFiles);
 
-  let parsedLogGroupFiles: AnyObject[];
+  let parsedLogGroupFiles: any[];
   $: parsedLogGroupFiles = selectedLogGroupFiles.filter((selectedLogGroupFile) => selectedLogGroupFile.data !== undefined);
   
+  // reactive vars
+  let logGroupFileMessageFilter = '';
+  $: logGroupFileMessageFilter;
+
+  let filteredLogGroups;
+  $: filteredLogGroups = logGroupFileMessageFilter === ''
+    ? parsedLogGroupFiles
+    : parsedLogGroupFiles.map((parsedLogGroupFile) => {
+      console.log('logGroupFileMessageFilter=', logGroupFileMessageFilter)
+      const data = _.flatten(parsedLogGroupFile.data.filter((data) => data.message.includes(logGroupFileMessageFilter)));
+      parsedLogGroupFile.data = data;
+      return parsedLogGroupFile;
+    });
   // handlers
 
   // lifecycles
   onMount(async () => {
     if (logGroup) {
       // console.log(selectedLogGroupFiles.map((selectedLogGroupFile) => `${logGroup.directoryPath}/${selectedLogGroupFile.name.split('/').slice(-1)[0]}`));
-      await logsStore.parseLogGroupFiles(logGroup);
+      await logsStore.parseLogGroupFiles(
+        _.assign(
+          {},
+          logGroup,
+          {
+            files: selectedLogGroupFiles
+          }
+        )
+      );
     }
   });
 </script>
 
-<main>
+<main style="width: 100%;">
   <div class="flex-box-column">
-    Hello
+    <LogGroupSearchTable
+      on:onApplyButtonClick={(event) => {
+        logGroupFileMessageFilter = event.detail;
+      }}
+      logGroupFiles={filteredLogGroups}
+    />
   </div>
 </main>
 

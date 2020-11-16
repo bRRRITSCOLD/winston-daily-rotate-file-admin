@@ -90,76 +90,107 @@ function createLogsStore() {
       // console.log(readLogGroups);
     },
     parseLogGroupFiles: async (logGroup: LogGroup) => {
-      // try {
-      //   console.log('logGrou', logGroup)
-      //   // read directory - we do this to
-      //   // determine the file type of
-      //   // each file passed in
-      //   const readDirectory = await directoriesService.readDir(logGroup.directoryPath);
-      //   // filter out the files not
-      //   // given for parsing
-      //   const selectedFiles = readDirectory.reduce((selectedFls: LogGroupFile[], fl: any) => {
-      //     console.log('fl=', fl)
-      //     const foundLogGroupFile = logGroup.files.find((file) => {
-      //       console.log('file=', file)
-      //       return file.path == fl.path
-      //     });
-      //     console.log('foundLogGroupFile=', foundLogGroupFile)
-      //     if (foundLogGroupFile) {
-      //       selectedFls.push(_.assign({}, foundLogGroupFile, { path: fl.path }));
-      //     }
-      //     return selectedFls;
-      //   }, []);
-      //   // read and parse the files based
-      //   // on the type of file they are -
-      //   // gzipped or regular .log/.txt files
-      //   const parsedSelectedFiles = await Promise.all(selectedFiles.map(async (selectedFile: LogGroupFile) => {
-      //     // based on the file type read it,
-      //     // parse it and store it
-      //     if (!selectedFile.path.toLowerCase().includes('.gz')) {
-      //       const readFile = await filesService.readTextFile(selectedFile.path);
-      //       const parsedFile = logsService.parseLogGroupFile(readFile);
-      //       selectedFile.data = parsedFile;
-      //     } else {
-      //       const readFile = await filesService.decodeGzFile(selectedFile.path);
-      //       const parsedFile = logsService.parseLogGroupFile(readFile);
-      //       selectedFile.data = parsedFile;
-      //     }
-      //     return selectedFile;
-      //   }));
-      //   console.log('parsedSelectedFiles=', parsedSelectedFiles)
-      //   // create new log group files array
-      //   const newLogGroupFiles = logGroup.files.map((file: LogGroupFile) => {
-      //     const foundParsedSelectedFile = parsedSelectedFiles.find((parsedSelectedFile) => parsedSelectedFile.logGroupFileId === file.logGroupFileId);
-      //     console.log('foundParsedSelectedFile=', foundParsedSelectedFile)
-      //     if (foundParsedSelectedFile) {
-      //       return foundParsedSelectedFile;
-      //     } else {
-      //       return file;
-      //     }
-      //   });
-      //   // replace logGroups state currently
-      // _logsStore.update(
-      //   state => {
-      //     const newLogGroups = state.logGroups.map((logGrp) => {
-      //       if (logGrp.logGroupId === logGroup.logGroupId) {
-      //         return _.assign({}, logGroup, { files: newLogGroupFiles })
-      //       } else {
-      //         return logGrp;
-      //       }
-      //     })
-      //     console.log('newLogGroups=', newLogGroups)
-      //     return _.assign({}, state, { logGroups: newLogGroups });
-      //   }
-      // );
-      //   console.log('parsedSelectedFiles=', parsedSelectedFiles);
-      //   // console.log('readDirectory=', readDirectory);
-      //   // console.log('selectedFiles=', selectedFiles);
-      //   // console.log('parseLogGroupFilesRequest=', parseLogGroupFilesRequest);
-      // } catch (err) {
-      //   console.log(err);
-      //   throw err;
-      // }
+      try {
+        // create new instance of a
+        // log group to use internally
+        const newLogGroup = new LogGroup(logGroup);
+        // read directory - we do this to
+        // determine the file type of
+        // each file passed in
+        const readDirectory = await directoriesService.readDir(newLogGroup.directoryPath);
+        console.log('newLogGroup=', newLogGroup)
+        console.log('readDirectory=', readDirectory)
+        // parse each log group file that was provided
+        const parsedLogGroupFiles = await Promise.all(newLogGroup.files.map(async (file) => {
+          // find the file in the read directory
+          const foundReadDirectoryFile = readDirectory.find((readDirectoryFile) => {
+            if (readDirectoryFile.name.endsWith('.gz')) {
+              const splitDirectoryFileName = readDirectoryFile.name.split('.');
+              splitDirectoryFileName.pop();
+              return splitDirectoryFileName.join('.') === file.name.split('/').slice(-1)[0]
+            } else if (!readDirectoryFile.name.endsWith('.gz') && !readDirectoryFile.name.endsWith('.json')) {
+              return readDirectoryFile.name === file.name.split('/').slice(-1)[0]
+            }
+          });
+          // parse file
+          let parsedFoundReadDirectoryFile;
+          if (foundReadDirectoryFile.name.endsWith('.gz')) {
+            // deocde file
+            const decodedGzFile = await filesService.decodeGzFile(foundReadDirectoryFile.path);
+            // parse and store file
+            parsedFoundReadDirectoryFile = logsService.parseLogGroupFile(decodedGzFile);
+          } else if (!foundReadDirectoryFile.name.endsWith('.gz') && !foundReadDirectoryFile.name.endsWith('.json')) {
+            // read file
+            const readTextFile = await filesService.readTextFile(foundReadDirectoryFile.path);
+            // parse and store file
+            parsedFoundReadDirectoryFile = logsService.parseLogGroupFile(readTextFile);
+          }
+          // set data of the log group file instance
+          file.data = parsedFoundReadDirectoryFile;
+          // return explicitly
+          return file;
+        }));
+        // replace each log group file in the
+        // log group instance that is a copy
+        // of the internal log group instance
+        for (const file of parsedLogGroupFiles) {
+          newLogGroup.replaceFile({ hash: file.hash }, file);
+        }
+        console.log('parsedLogGroupFiles=', parsedLogGroupFiles);
+        // replace the log files of the current log group
+        _logsStore.update((state) => {
+          console.log(state);
+          const foundLogGroupIndex = _.findIndex(state.logGroups, { logGroupId: logGroup.logGroupId });
+          console.log('foundLogGroupIndex=', foundLogGroupIndex);
+          const foundLogGroup = new LogGroup(_.assign({}, state.logGroups[foundLogGroupIndex]));
+          console.log('foundLogGroup=', foundLogGroup);
+          for (const logGroupFile of newLogGroup.files) {
+            foundLogGroup.replaceFile({ hash: logGroupFile.hash }, logGroupFile);
+          }
+          // create a new stae based on the old state
+          const newState = _.assign(
+            {},
+            state
+          );
+          // replace/mutate/update the old state here
+          newState.logGroups[foundLogGroupIndex] = foundLogGroup;
+          console.log('newState=', newState)
+          // return new state
+          return _.assign({}, newState);
+        });
+        // parse each file
+        // const parsedFiles = await logGroup.files.map(async (file) => {
+        //   // try to find the file in the read directory
+        //   const foundReadDirectoyFile = readDirectory.map((readDirectoryFile) => readDirectoryFile.)
+        //   if ((file.name as string).endsWith('.gz') && !(file.name as string).endsWith('.json')) {
+        //     const splitFilename = file.name.slice().split('.');
+        //     splitFilename.pop();
+        //     if (logGroup.files.find((logGroupFile) => logGroupFile.name.split('/').slice(-1)[0] === splitFilename.join('.'))) {
+        //       files.push(file);
+        //     }
+        //   } else if (!(file.name as string).endsWith('.gz') && !(file.name as string).endsWith('.json')) {
+        //     if (logGroup.files.find((logGroupFile) => logGroupFile.name.split('/').slice(-1)[0] === file.name)) {
+        //       files.push(file);
+        //     }
+        //   }
+        // });
+        // // filter out the files that we do not want to read
+        // const filesForParsing = readDirectory.reduce((files: any[], file: any) => {
+        //   return files;
+        // }, []);
+        // // now parse the files and update the log group
+        // const parsedFiles = await Promise.all(filesForParsing.map(async (fileForParsing) => {
+        //   const parsedFile = await logsService.parseLogGroupFile();
+        //   // place data in the file for parsing
+        //   fileForParsing.data = parsedFile;
+        //   // reutrn explicitly
+        //   return fileForParsing
+        // }));
+        // no update the store
+      } catch (err) {
+        console.log(err);
+        throw err;
+      }
     }
   };
 }

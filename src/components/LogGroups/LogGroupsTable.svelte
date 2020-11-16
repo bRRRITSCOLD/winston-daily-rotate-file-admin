@@ -20,7 +20,7 @@
   const dispatch = createEventDispatcher();
   
   let virtualTableWidth = 0;
-
+  let filter = '';
 
   let virtualTableColumns = [];
   $: virtualTableColumns = [
@@ -35,12 +35,14 @@
 </script>
 
 <Card>
-  <div class="d-flex flex-row justify-end" style="padding-top: 10px;">
+  <div class="d-flex flex-row justify-end" style="padding-top: 25px;">
     <div style="padding-right: 10px; padding-left: 10px; width: 90%;">
-      <TextField>Filter</TextField>
+      <TextField bind:value="{filter}">Filter</TextField>
     </div>
     <div class="text-align-right" style="padding-right: 10px; padding-left: 10px;">
-      <Button class="primary-color">Apply</Button>
+      <Button on:click={() => {
+        dispatch('onApplyButtonClick', filter);
+      }} class="primary-color">Apply</Button>
     </div>
   </div>
   <div class="d-flex flex-row justify-space-around">

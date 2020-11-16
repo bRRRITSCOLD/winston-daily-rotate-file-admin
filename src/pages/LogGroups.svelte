@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
-  
     // node_modules
-    import { push } from 'svelte-spa-router'
+    import { push } from 'svelte-spa-router';
+    import { onMount } from 'svelte';
+    import FuzzySearch from 'fuzzy-search';
   
     // components
     import LogGroupsTable from '../components/LogGroups/LogGroupsTable.svelte';
@@ -17,12 +17,24 @@
     onMount(() => {
       console.log($logsStore.logGroups)
     });
+
+    // reactive vars
+    let logGroupFilter = '';
+    $: logGroupFilter;
+
+    let filteredLogGroups;
+    $: filteredLogGroups = logGroupFilter === ''
+      ? $logsStore.logGroups
+      : $logsStore.logGroups.filter((logGroup) => logGroup.auditLog.includes(logGroupFilter));
 </script>
 
 <main>
   <div class="d-flex flex-column">
     <LogGroupsTable
-      logGroups={$logsStore.logGroups}
+      logGroups={filteredLogGroups}
+      on:onApplyButtonClick={(event) => {
+        logGroupFilter = event.detail;
+      }}
       on:onAddButtonClick={async () => {
         await logsStore.addLogGroups();
       }}
