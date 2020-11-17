@@ -25,19 +25,10 @@ import LogGroupSearchTable from '../components/LogGroup/LogGroupSearchTable.svel
   $: parsedQuerystring = qs.parse($querystring);
 
   let logGroup: LogGroup;
-  $: logGroup = $logsStore.logGroups.slice().find((logGroup) => logGroup.logGroupId === params.logGroupId);
-  // $: console.log(logGroup);
-
-  let logGroupFiles = [];
-  $: logGroupFiles = _.get(logGroup, 'files', []);
-  // $: console.log(logGroupFiles);
+  $: logGroup = $logsStore.logGroups.find((logGroup) => logGroup.logGroupId === params.logGroupId);
 
   let selectedLogGroupFiles = [];
-  $: selectedLogGroupFiles = logGroupFiles.filter((logGroupFile) => parsedQuerystring.logGroupFileIds.split(',').includes(logGroupFile.logGroupFileId));
-  // $: console.log(selectedLogGroupFiles);
-
-  let parsedLogGroupFiles: any[];
-  $: parsedLogGroupFiles = selectedLogGroupFiles.filter((selectedLogGroupFile) => selectedLogGroupFile.data !== undefined);
+  $: selectedLogGroupFiles = _.get($logsStore.logGroups.find((logGroup) => logGroup.logGroupId === params.logGroupId), 'files', []).filter((logGroupFile) => parsedQuerystring.logGroupFileIds.split(',').includes(logGroupFile.logGroupFileId));
   
   // reactive vars
   let logGroupFileMessageFilter = '';
@@ -45,12 +36,18 @@ import LogGroupSearchTable from '../components/LogGroup/LogGroupSearchTable.svel
 
   let filteredLogGroups;
   $: filteredLogGroups = logGroupFileMessageFilter === ''
-    ? parsedLogGroupFiles
-    : parsedLogGroupFiles.map((parsedLogGroupFile) => {
+    ? _.get($logsStore.logGroups.find((logGroup) => logGroup.logGroupId === params.logGroupId), 'files', []).filter((logGroupFile) => parsedQuerystring.logGroupFileIds.split(',').includes(logGroupFile.logGroupFileId)).filter((selectedLogGroupFile) => selectedLogGroupFile.data !== undefined)
+    : _.get($logsStore.logGroups.find((logGroup) => logGroup.logGroupId === params.logGroupId), 'files', []).filter((logGroupFile) => parsedQuerystring.logGroupFileIds.split(',').includes(logGroupFile.logGroupFileId)).filter((selectedLogGroupFile) => selectedLogGroupFile.data !== undefined).map((parsedLogGroupFile) => {
       console.log('logGroupFileMessageFilter=', logGroupFileMessageFilter)
-      const data = _.flatten(parsedLogGroupFile.data.filter((data) => data.message.includes(logGroupFileMessageFilter)));
-      parsedLogGroupFile.data = data;
-      return parsedLogGroupFile;
+      console.log('parsedLogGroupFile.data=', parsedLogGroupFile.data)
+      const copy = _.assign({}, parsedLogGroupFile);
+      const data = _.flatten(copy.data.filter((data) => {
+        const index = data.message.toString().indexOf(logGroupFileMessageFilter);
+        console.log('index=', index)
+        return index > -1
+      }));
+      copy.data = data;
+      return copy;
     });
   // handlers
 
@@ -75,7 +72,7 @@ import LogGroupSearchTable from '../components/LogGroup/LogGroupSearchTable.svel
   <div class="flex-box-column">
     <LogGroupSearchTable
       on:onApplyButtonClick={(event) => {
-        logGroupFileMessageFilter = event.detail;
+        logGroupFileMessageFilter = event.detail.replaceAll('“', '"').replaceAll('”', '"');
       }}
       logGroupFiles={filteredLogGroups}
     />
@@ -84,59 +81,3 @@ import LogGroupSearchTable from '../components/LogGroup/LogGroupSearchTable.svel
 
 
 <style></style>
-
-<!-- <script>
-  $: {
-    rows = sourceDefinition.fetch(sortBy, sortAsc, search, query);
-    console.log('Updated rows:', rows);
-  };
-</script>
-
-{#await rows}
-  Loading...
-{:then resolvedRows}
-  <DataTable {columns} rows={resolvedRows} />
-{:catch error}
-  <p class="text-red-500">{error.message}</p>
-{/await} -->
-
-
-<!-- 
-// first find the log file
-const foundLogFile = logFiles.find((logFile) => logFile.hash === hash);
-// only act if file is found
-if (foundLogFile) {
-  // depending on if the file is gzipped or not
-  // then act accordingly
-  let splitReadLogFile: any[];
-  // depending on if the item is gzipped
-  // or not then act accordingly
-  if (foundLogFile.path?.includes('.gz')) {
-    console.log('gzipped file');
-    const readLogFile: string = await tauri.promisified({
-      cmd: 'readParseLogFiles',
-      argument: foundLogFile?.path
-    });
-    splitReadLogFile = readLogFile
-      .split('\n')
-      .filter((item: string) => item.length > 0)
-      .map((item: string) => JSON.parse(item));
-  } else {
-    console.log('non-gzipped file');
-    const readLogFile = await tauriFs.readTextFile(foundLogFile?.path as string);
-    splitReadLogFile = readLogFile
-      .split('\n')
-      .filter((item: string) => item.length > 0)
-      .map((item: string) => JSON.parse(item))
-      .map((logFileItem: any) => {
-        return logFileItem
-      });
-  }
-  console.log('splitReadLogFile=', splitReadLogFile);
-  // find the file and replace it in the current log audit file
-  logAuditFile?.replaceLogFile({ hash }, assign({}, foundLogFile, { data: splitReadLogFile }));
-  // update the stored logAuditFile
-  logsStoreActions.replaceLogAuditFile(logAuditFile);
-} else {
-  console.log('log file not found');
-} -->

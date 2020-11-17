@@ -25,7 +25,7 @@
     let filteredLogGroups;
     $: filteredLogGroups = logGroupFilter === ''
       ? $logsStore.logGroups
-      : $logsStore.logGroups.filter((logGroup) => logGroup.auditLog.includes(logGroupFilter));
+      : $logsStore.logGroups.filter((logGroup) => logGroup.auditLog.toString().indexOf(logGroupFilter) > -1);
 </script>
 
 <main>
