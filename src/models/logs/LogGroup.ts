@@ -5,7 +5,7 @@ import type { AnyObject } from "../common";
 
 export interface LogGroupFileInterface {
   logGroupFileId?: string;
-  date: number;
+  date: number | string;
   name: string;
   hash: string;
   selected?: boolean;
@@ -18,7 +18,7 @@ export interface LogGroupFileInterface {
 
 export class LogGroupFile implements LogGroupFileInterface {
   public logGroupFileId?: string;
-  public date!: number;
+  public date!: number | string;
   public name!: string;
   public hash!: string;
   public selected?: boolean;
@@ -31,7 +31,7 @@ export class LogGroupFile implements LogGroupFileInterface {
   public constructor(logGroupFile: Partial<LogGroupFileInterface>) {
     assign(this, logGroupFile, {
       logGroupFileId: get(logGroupFile, 'logGroupFileId', uuid()),
-      date: get(logGroupFile, 'date'),
+      date: new Date(get(logGroupFile, 'date', '')).toDateString(),
       name: get(logGroupFile, 'name'),
       hash: get(logGroupFile, 'hash'),
       selected: get(logGroupFile, 'selected'),
