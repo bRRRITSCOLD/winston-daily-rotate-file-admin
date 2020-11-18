@@ -66,7 +66,7 @@
   </div>
   <div class="fd-flex flex-row justify-space-around">
     <div
-      style="height: calc(100vh - 15em); min-height: 200px; width: calc(100vw - 2em); padding-top: 10px;"
+      style="height: calc(100vh - 15em); min-height: 200px; width: 100%; padding-top: 10px;"
       use:watchResize={(node) => {
         virtualTableWidth = node.clientWidth;
       }}

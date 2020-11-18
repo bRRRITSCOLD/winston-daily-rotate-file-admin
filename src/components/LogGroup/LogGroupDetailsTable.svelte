@@ -22,6 +22,7 @@
   const dispatch = createEventDispatcher();
   
   let virtualTableWidth = 0;
+  let filter = '';
 
 
   let virtualTableColumns = [];
@@ -58,17 +59,19 @@
 </script>
 
 <Card>
-  <!-- <div class="d-flex flex-row justify-end" style="padding-top: 10px;">
+  <div class="d-flex flex-row justify-end" style="padding-top: 10px;">
     <div style="padding-right: 10px; padding-left: 10px; width: 90%;">
-      <TextField>Filter</TextField>
+      <TextField bind:value="{filter}">Filter</TextField>
     </div>
     <div class="text-align-right" style="padding-right: 10px; padding-left: 10px;">
-      <Button class="primary-color">Apply</Button>
+      <Button on:click={() => {
+        dispatch('onApplyButtonClick', filter);
+      }} class="primary-color">Apply</Button>
     </div>
-  </div> -->
+  </div>
   <div class="fd-flex flex-row justify-space-around">
     <div
-      style="height: calc(100vh - 15em); min-height: 200px; width: calc(100vw - 2em); padding-top: 10px;"
+      style="height: calc(100vh - 15em); min-height: 200px; width: 100%;padding-top: 10px;"
       use:watchResize={(node) => {
         virtualTableWidth = node.clientWidth;
       }}

@@ -35,20 +35,17 @@ import LogGroupSearchTable from '../components/LogGroup/LogGroupSearchTable.svel
   $: logGroupFileMessageFilter;
 
   let filteredLogGroups;
-  $: filteredLogGroups = logGroupFileMessageFilter === ''
-    ? _.get($logsStore.logGroups.find((logGroup) => logGroup.logGroupId === params.logGroupId), 'files', []).filter((logGroupFile) => parsedQuerystring.logGroupFileIds.split(',').includes(logGroupFile.logGroupFileId)).filter((selectedLogGroupFile) => selectedLogGroupFile.data !== undefined)
-    : _.get($logsStore.logGroups.find((logGroup) => logGroup.logGroupId === params.logGroupId), 'files', []).filter((logGroupFile) => parsedQuerystring.logGroupFileIds.split(',').includes(logGroupFile.logGroupFileId)).filter((selectedLogGroupFile) => selectedLogGroupFile.data !== undefined).map((parsedLogGroupFile) => {
-      console.log('logGroupFileMessageFilter=', logGroupFileMessageFilter)
-      console.log('parsedLogGroupFile.data=', parsedLogGroupFile.data)
+  $: {
+    const logGroupFilesData = _.get($logsStore.logGroups.find((logGroup) => logGroup.logGroupId === params.logGroupId), 'files', []).filter((logGroupFile) => parsedQuerystring.logGroupFileIds.split(',').includes(logGroupFile.logGroupFileId)).filter((selectedLogGroupFile) => selectedLogGroupFile.data !== undefined);
+    filteredLogGroups = logGroupFileMessageFilter === ''
+    ? logGroupFilesData
+    : logGroupFilesData.map((parsedLogGroupFile) => {
       const copy = _.assign({}, parsedLogGroupFile);
-      const data = _.flatten(copy.data.filter((data) => {
-        const index = data.message.toString().indexOf(logGroupFileMessageFilter);
-        console.log('index=', index)
-        return index > -1
-      }));
+      const data = _.flatten(copy.data.filter((data) => data.message.toString().indexOf(logGroupFileMessageFilter) > -1));
       copy.data = data;
       return copy;
     });
+  }
   // handlers
 
   // lifecycles

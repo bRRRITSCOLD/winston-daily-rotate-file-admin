@@ -15,7 +15,7 @@
   on:mouseover={() => { background = 'lightgray' }}
   on:mouseleave={() => { background = 'white' }}
 >
-  {new Date(data[dataName])}
+  {new Date(data[dataName]).toDateString()}
 </div>
 
 <style>

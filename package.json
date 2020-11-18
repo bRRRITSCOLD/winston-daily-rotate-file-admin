@@ -33,7 +33,6 @@
   },
   "dependencies": {
     "fuse.js": "^6.4.3",
-    "fuzzy-search": "^3.2.1",
     "qs": "^6.9.4",
     "sirv-cli": "^1.0.0",
     "svelte-materialify": "^0.3.1",

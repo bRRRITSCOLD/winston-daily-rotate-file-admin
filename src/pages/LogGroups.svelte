@@ -2,7 +2,6 @@
     // node_modules
     import { push } from 'svelte-spa-router';
     import { onMount } from 'svelte';
-    import FuzzySearch from 'fuzzy-search';
   
     // components
     import LogGroupsTable from '../components/LogGroups/LogGroupsTable.svelte';
