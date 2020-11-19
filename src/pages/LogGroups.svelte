@@ -2,7 +2,11 @@
     // node_modules
     import { push } from 'svelte-spa-router';
     import { onMount } from 'svelte';
+    import { Snackbar, Button } from 'svelte-materialify/src';
   
+    // libraries
+    import { _ } from '../lib/utils';
+
     // components
     import LogGroupsTable from '../components/LogGroups/LogGroupsTable.svelte';
   
@@ -25,7 +29,22 @@
     $: filteredLogGroups = logGroupFilter === ''
       ? $logsStore.logGroups
       : $logsStore.logGroups.filter((logGroup) => logGroup.auditLog.toString().indexOf(logGroupFilter) > -1);
+
+    let addLogGroupsError;
+    $: addLogGroupsError = $logsStore.addLogGroupsError;
 </script>
+
+
+<Snackbar style="background: red; top: -10px;" class="justify-space-between" bind:active={addLogGroupsError} top center>
+  {_.get(addLogGroupsError, 'message')}
+  <Button
+    text
+    on:click={() => {
+      logsStore.setAddLogGroupError(undefined);
+    }}>
+    Dismiss
+  </Button>
+</Snackbar>
 
 <main>
   <div class="d-flex flex-column">

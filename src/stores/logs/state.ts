@@ -1,11 +1,22 @@
+//node_modules
+import { _ } from '../../lib/utils';
+
 // models
-import type { LogGroup, LogGroupFile } from '../../models';
+import type { AnyObject, LogGroup, LogGroupFile } from '../../models';
 
 export interface LogStoreStateInterface {
   logGroups: LogGroup[];
-  logGroupsFiles?: LogGroupFile[];
+  addLogGroupsError?: Error | AnyObject;
 }
 
 export const initialLogsStoreState: LogStoreStateInterface = {
-  logGroups: []
+  logGroups: [],
+  addLogGroupsError: undefined
 };
+
+export function cachedLogsStoreState(logsStoreState: LogStoreStateInterface): Partial<LogStoreStateInterface> {
+  return _.assign(
+    {},
+    { logGroups: logsStoreState.logGroups }
+  );
+}
