@@ -40,7 +40,7 @@
   <Button
     text
     on:click={() => {
-      logsStore.setAddLogGroupError(undefined);
+      logsStore.setAddLogGroupsError(undefined);
     }}>
     Dismiss
   </Button>

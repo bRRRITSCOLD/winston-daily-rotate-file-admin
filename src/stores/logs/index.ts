@@ -20,6 +20,8 @@ import {
 // store specific
 import { cachedLogsStoreState, initialLogsStoreState } from "./state";
 import { LOGS_STORE_KEY } from "./keys";
+import { createLogsStoreActions } from "./actions";
+import { createLogsStoreThunks } from "./thunks";
 
 
 
@@ -32,101 +34,15 @@ function createLogsStore() {
     sessionStorage.setItem(LOGS_STORE_KEY, JSON.stringify(cachedLogsStoreState(value)));
   });
 
+  const _logStoreActions = createLogsStoreActions(_logsStore);
+  const _logStoreThunks = createLogsStoreThunks(_logStoreActions);
+
   return {
     update: _logsStore.update,
     subscribe: _logsStore.subscribe,
     reset: () => _logsStore.set(initialLogsStoreState),
-    setAddLogGroupError: (error: Error | AnyObject) => _logsStore.update(state => _.assign(
-      {},
-      state,
-      { addLogGroupsError: error }
-    )),
-    addLogGroups: async () => {
-      try {
-        // reset any errors that we may have had
-        // and indicate that we are adding log groups
-        _logsStore.update(
-          state => {
-            // create new state
-            const newState = _.assign(
-              {},
-              state,
-              { addLogGroupsError: undefined, isAddingLogGroups: true }
-            );
-            // return new state
-            return _.assign({}, newState);
-          }
-        );
-        // ask user for log audit files
-        const fileNames: string[] = await filesService.getFileNames();
-        // filter out only audit files
-        const logGroupNames = fileNames
-          .filter((fileName: string) => fileName.toLowerCase().endsWith('-audit.json'));
-        // map over each file selected and read them
-        const readLogGroups = await Promise.all(
-          logGroupNames
-            .map(async (logGroup: string) => {
-              // read a single file
-              const readLogGroup = await filesService.readTextFile(logGroup);
-              console.log(JSON.stringify(JSON.parse(readLogGroup), undefined, 2));
-              // parse and return
-              return JSON.parse(readLogGroup);
-            })
-        );
-        // update store
-        _logsStore.update(
-          state => {
-            // for each read audit file
-            // replace it in the current state
-            let updatedLogGroups = state.logGroups.slice();
-            for (const [readLogGroupIndex, readLogGroup] of readLogGroups.entries()) {
-              const splitLogGroupName = logGroupNames[readLogGroupIndex].split('/');
-              // remove log aufit file name - we need dir name
-              splitLogGroupName.pop();
-              // replace in state
-              updatedLogGroups = _.replaceOne(
-                { auditLog: readLogGroup.auditLog },
-                updatedLogGroups,
-                assign(
-                  {},
-                  readLogGroup, 
-                  {
-                    directoryPath: splitLogGroupName.join('/'),
-                    logGroupId: uuid()
-                  }
-                )
-              ); 
-            }
-            // create new state
-            const newState = _.assign(
-              {},
-              state,
-              {
-                addLogGroupsError: undefined,
-                isAddingLogGroups: false,
-                logGroups: updatedLogGroups.map((logGroup) => new LogGroup(logGroup))
-              }
-            );
-            // return new state
-            return _.assign({}, newState);
-          }
-        );
-      } catch (err) {
-        // update store
-        _logsStore.update(
-          state => {
-            // create new state
-            const newState = _.assign(
-              {},
-              state,
-              { addLogGroupsError: err, isAddingLogGroups: false }
-            );
-            // return new state
-            return _.assign({}, newState);
-          }
-        );
-      }
-    },
+    ..._logStoreActions,
+    ..._logStoreThunks,
     parseLogGroupFiles: async (logGroup: LogGroup) => {
       try {
         // create new instance of a
