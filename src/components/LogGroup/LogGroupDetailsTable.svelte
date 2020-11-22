@@ -41,17 +41,17 @@
       cellComponent: LogGroupDetailsTableRowDateCell,
       headerComponent: LogGroupDetailsTableHeaderCell
     },
-    {
-      display: 'Hash',  // What will be displayed as the column header
-      dataName: 'hash',  // The key of a row to get the column's data from
-      width: virtualTableWidth * .35,
-      cellComponent: LogGroupDetailsTableRowDefaultCell,
-      headerComponent: LogGroupDetailsTableHeaderCell
-    },
+    // {
+    //   display: 'Hash',  // What will be displayed as the column header
+    //   dataName: 'hash',  // The key of a row to get the column's data from
+    //   width: virtualTableWidth * .35,
+    //   cellComponent: LogGroupDetailsTableRowDefaultCell,
+    //   headerComponent: LogGroupDetailsTableHeaderCell
+    // },
     {
       display: 'Name',  // What will be displayed as the column header
       dataName: 'name',  // The key of a row to get the column's data from
-      width: virtualTableWidth * .35,
+      width: virtualTableWidth * .70,
       cellComponent: LogGroupDetailsTableRowDefaultCell,
       headerComponent: LogGroupDetailsTableHeaderCell
     }

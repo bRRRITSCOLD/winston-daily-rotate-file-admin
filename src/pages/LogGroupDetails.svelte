@@ -21,14 +21,6 @@
   let selectedLogGroupFiles: LogGroupFile[] = [];
   $: selectedLogGroupFiles;
 
-  // let logGroupFiles: LogGroupFile[] = [];
-  // $: logGroupFiles = _.get($logsStore.logGroups.slice().find((logGroup) => logGroup.logGroupId === params.logGroupId), 'files', [] as LogGroupFile[]).map((file) => _.assign(
-  //   {},
-  //   file,
-  //   { selected: false }
-  // ));
-
-  // reactive vars
   let logGroupFilesFilter = '';
   $: logGroupFilesFilter;
 
@@ -51,21 +43,6 @@
       return fltrdLogGroupFiles;
     }, []);
   }
-
-  // reactive vars
-
-  // let filteredLogGroups;
-  // $: {
-  //   const logGroupFilesData = _.get($logsStore.logGroups.find((logGroup) => logGroup.logGroupId === params.logGroupId), 'files', []).filter((logGroupFile) => parsedQuerystring.logGroupFileIds.split(',').includes(logGroupFile.logGroupFileId)).filter((selectedLogGroupFile) => selectedLogGroupFile.data !== undefined);
-  //   filteredLogGroups = logGroupFileMessageFilter === ''
-  //   ? logGroupFilesData
-  //   : logGroupFilesData.map((parsedLogGroupFile) => {
-  //     const copy = _.assign({}, parsedLogGroupFile);
-  //     const data = _.flatten(copy.data.filter((data) => data.message.toString().indexOf(logGroupFileMessageFilter) > -1));
-  //     copy.data = data;
-  //     return copy;
-  //   });
-  // }
 </script>
 
 <main>

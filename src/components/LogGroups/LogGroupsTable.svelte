@@ -64,9 +64,22 @@
       />
     </div>
   </div>
-  <div class="d-flex flex-row justify-end" style="padding-top: 10px; padding-right: 10px; padding-left: 10px; width: 100%;">
-      <Button on:click={() => {
+  <div class="d-flex flex-row justify-space-between" style="padding-top: 10px; padding-right: 10px; padding-left: 10px; width: 100%;">
+    <Button
+      on:click={() => {
+        dispatch('onSaveButtonClick', true);
+      }}
+      class="primary-color"
+    >
+      Save
+    </Button>
+    <Button
+      on:click={() => {
         dispatch('onAddButtonClick', true);
-      }} class="primary-color">Add</Button>
+      }}
+      class="primary-color"
+    >
+      Add
+    </Button>
   </div>
 </Card>

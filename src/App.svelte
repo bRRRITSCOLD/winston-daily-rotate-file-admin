@@ -2,7 +2,7 @@
   // node_modules
   import { onMount } from 'svelte';
   import Router, { location, push, querystring, link } from 'svelte-spa-router';
-  import { MaterialApp } from 'svelte-materialify/src';
+  import { MaterialApp, Snackbar, Button } from 'svelte-materialify/src';
 
   // libraries
   import { _ } from './lib/utils';
@@ -12,6 +12,8 @@
 
   // routes
   import routes from './routes';
+  import { logsService } from './services';
+  import { logsStore } from './stores/logs';
 
   // props
 
@@ -35,18 +37,40 @@
       return crumbs;
     }, []);
 
-  onMount(() => {
+  onMount(async () => {
+    // now redirect if needed
     if ($location === '/') {
       push('/log-groups');
     }
-    })
+    // first get the app dir
+    // load any saved log groups/data
+    // from previous application instances
+    const logGroups = await logsStore.loadLogGroups();
+    console.log('loadLogGroups=', logGroups)
+  })
 </script>
 
+
+<!-- <Snackbar style="background: red; top: -10px;" class="justify-space-between" bind:active={$logsStore.loadLogGroupsError} top center>
+  {_.get($logsStore.loadLogGroupsError, 'message')}
+  <Button
+    text
+    on:click={() => {
+      logsStore.setLoadLogGroupsError(undefined);
+    }}>
+    Dismiss
+  </Button>
+</Snackbar> -->
+
 <MaterialApp>
-  <div style="padding-bottom: 20px;">
-    <NavigationBar crumbs={navigationBarCrumbs} />
-  </div>
-  <Router {routes}/>
+  {#if $logsStore.isLoadingLogGroups}
+    Loading
+  {:else}
+    <div style="padding-bottom: 20px;">
+      <NavigationBar crumbs={navigationBarCrumbs} />
+    </div>
+    <Router {routes}/>
+  {/if}
 </MaterialApp>
 
 <style>

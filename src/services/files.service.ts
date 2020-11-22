@@ -11,6 +11,20 @@ export async function getFileNames(): Promise<string[]> {
   return fileNames as string[];
 }
 
+export async function doesFileExist(filePath: string): Promise<boolean> {
+  try {
+    // check to see if a file ezists
+    const doesFileExist: boolean = await tauri.promisified({
+      cmd: 'doesFileExist',
+      argument: filePath
+    });
+    // return explicitly
+    return doesFileExist;
+  } catch (err) {
+    throw err;
+  }
+}
+
 export async function readTextFile(filePath: string): Promise<string> {
   // read the audit file
   const readTextFile = await tauriFs.readTextFile(filePath);
@@ -25,6 +39,13 @@ export async function readTextFiles(filePaths: string[]): Promise<string[]> {
   );
   // explicitly return read files
   return readTextFiles;
+}
+
+export async function writeFile(file: { path: string; contents: any }): Promise<void> {
+  // read the audit file
+  await tauriFs.writeFile({ path: file.path, contents: file.contents });
+  // explicity return read file
+  return;
 }
 
 export async function decodeGzFile(filePath: string) {

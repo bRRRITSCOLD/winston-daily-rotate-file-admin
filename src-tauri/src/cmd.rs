@@ -10,5 +10,19 @@ pub enum Cmd {
     argument: String,
     callback: String,
     error: String
+  },
+  GetAppDirPath {
+    callback: String,
+    error: String
+  },
+  DoesFileExist {
+    argument: String,
+    callback: String,
+    error: String
+  },
+  Mkdirp {
+    argument: String,
+    callback: String,
+    error: String
   }
 }

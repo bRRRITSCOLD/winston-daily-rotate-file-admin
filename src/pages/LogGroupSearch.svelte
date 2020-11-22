@@ -3,19 +3,19 @@
   import { querystring } from 'svelte-spa-router';
   import qs from 'qs';
   import { onMount } from 'svelte';
+    import { Snackbar, Button } from 'svelte-materialify/src';
 
   // libraries
   import { _ } from '../lib/utils';
 
   // models
-  import type { AnyObject, LogGroup, LogGroupFile } from '../models';
+  import type { LogGroup } from '../models';
 
   // components
-  import LogGroupDetailsTable from '../components/LogGroup/LogGroupDetailsTable.svelte';
+  import LogGroupSearchTable from '../components/LogGroup/LogGroupSearchTable.svelte';
 
   // stores
   import { logsStore } from '../stores/logs';
-import LogGroupSearchTable from '../components/LogGroup/LogGroupSearchTable.svelte';
 
   // props
   export let params: any = {};
@@ -50,8 +50,8 @@ import LogGroupSearchTable from '../components/LogGroup/LogGroupSearchTable.svel
 
   // lifecycles
   onMount(async () => {
+    console.log('$logsStore.isParsingLogGroupFiles', $logsStore.isParsingLogGroupFiles)
     if (logGroup) {
-      // console.log(selectedLogGroupFiles.map((selectedLogGroupFile) => `${logGroup.directoryPath}/${selectedLogGroupFile.name.split('/').slice(-1)[0]}`));
       await logsStore.parseLogGroupFiles(
         _.assign(
           {},
@@ -65,14 +65,29 @@ import LogGroupSearchTable from '../components/LogGroup/LogGroupSearchTable.svel
   });
 </script>
 
+<Snackbar style="background: red; top: -10px;" class="justify-space-between" active={$logsStore.parseLogGroupFilesError} top center>
+  {_.get($logsStore.parseLogGroupFilesError, 'message')}
+  <Button
+    text
+    on:click={() => {
+      logsStore.setParseLogGroupFilesError(undefined);
+    }}>
+    Dismiss
+  </Button>
+</Snackbar>
+
 <main style="width: 100%;">
   <div class="flex-box-column">
-    <LogGroupSearchTable
-      on:onApplyButtonClick={(event) => {
-        logGroupFileMessageFilter = event.detail.replaceAll('“', '"').replaceAll('”', '"');
-      }}
-      logGroupFiles={filteredLogGroups}
-    />
+    {#if $logsStore.isParsingLogGroupFiles}
+      <div>LOADING.....</div>
+    {:else}
+      <LogGroupSearchTable
+        on:onApplyButtonClick={(event) => {
+          logGroupFileMessageFilter = event.detail.replaceAll('“', '"').replaceAll('”', '"');
+        }}
+        logGroupFiles={filteredLogGroups}
+      />
+    {/if}
   </div>
 </main>
 

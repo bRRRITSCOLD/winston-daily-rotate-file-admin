@@ -4,8 +4,10 @@
 )]
 
 use std::fs::File;
+use std::fs;
 use flate2::read::GzDecoder;
 use std::io::Read;
+use std::path::Path;
 
 mod cmd;
 
@@ -36,11 +38,57 @@ fn main() {
                   let mut s = String::new();
                   decompressed_gz.read_to_string(&mut s)?;
                   Ok(s)
-                  // perform an async operation here
-                  // if the returned value is Ok, the promise will be resolved with its value
-                  // if the returned value is Err, the promise will be rejected with its value
-                  // the value is a string that will be eval'd
-                  // Ok("{ key: 'response', value: [{ id: 3 }] }".to_string())
+                },
+                callback,
+                error,
+              )
+            }
+
+            GetAppDirPath {
+              callback,
+              error
+            } => {
+              // tauri::execute_promise is a helper for APIs that uses the tauri.promisified JS function
+              // so you can easily communicate between JS and Rust with promises
+              tauri::execute_promise(
+                _webview,
+                move || {
+                  Ok(tauri::api::path::app_dir().unwrap())
+                },
+                callback,
+                error,
+              )
+            }
+
+            DoesFileExist {
+              argument,
+              callback,
+              error
+            } => {
+              // tauri::execute_promise is a helper for APIs that uses the tauri.promisified JS function
+              // so you can easily communicate between JS and Rust with promises
+              tauri::execute_promise(
+                _webview,
+                move || {
+                  Ok(Path::new(&argument).exists())
+                },
+                callback,
+                error,
+              )
+            }
+
+            Mkdirp {
+              argument,
+              callback,
+              error
+            } => {
+              // tauri::execute_promise is a helper for APIs that uses the tauri.promisified JS function
+              // so you can easily communicate between JS and Rust with promises
+              tauri::execute_promise(
+                _webview,
+                move || {
+                  fs::create_dir_all(argument)?;
+                  Ok(true)
                 },
                 callback,
                 error,

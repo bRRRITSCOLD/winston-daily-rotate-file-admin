@@ -34,7 +34,6 @@
     $: addLogGroupsError = $logsStore.addLogGroupsError;
 </script>
 
-
 <Snackbar style="background: red; top: -10px;" class="justify-space-between" bind:active={addLogGroupsError} top center>
   {_.get(addLogGroupsError, 'message')}
   <Button
@@ -46,6 +45,10 @@
   </Button>
 </Snackbar>
 
+<!-- use:watchResize={(node) => {
+  virtualTableWidth = node.clientWidth;
+}} -->
+
 <main>
   <div class="d-flex flex-column">
     <LogGroupsTable
@@ -56,10 +59,12 @@
       on:onAddButtonClick={async () => {
         await logsStore.addLogGroups();
       }}
+      on:onSaveButtonClick={async () => {
+        await logsStore.saveLogGroups($logsStore.logGroups);
+      }}
       on:onTableRowLogGroupCellClick={(event) => {
         // find the log audit file clicked on
         const clickedLogAudigFile = $logsStore.logGroups[event.detail.rowIndex];
-        console.log(clickedLogAudigFile)
         // route to correct details page
         push(`/log-groups/${clickedLogAudigFile.logGroupId}/details`);
       }}

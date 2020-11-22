@@ -1,18 +1,28 @@
 import type { Writable } from "svelte/store";
 import type { LogStoreStateInterface } from "./state";
 import { _ } from '../../lib/utils';
-import type { AnyObject, LogGroup } from "../../models";
+
+// models
+import { LogGroup } from "../../models";
+import type { AnyObject, LogGroupFile } from "../../models";
 
 export interface LogsStoreActionsInterface {
-  replaceManyLogGroups: (logGroups: LogGroup[]) => void;
+  replaceLogGroups: (logGroups: LogGroup[]) => void;
+  replaceLogGroupFiles: (replaceLogGroupFilesRequest: { logGroupId: string; files: LogGroupFile[] }) => void;
+  setIsLoadingLogGroups: (setIsLoadingLogGroups: boolean) => void;
+  setLoadLogGroupsError: (error: Error | AnyObject) => void;
+  setIsSavingLogGroups: (setIsSaveingLogGroups: boolean) => void;
+  setSaveLogGroupsError: (error: Error | AnyObject) => void;
   setIsAddingLogGroups: (setIsAddingLogGroups: boolean) => void;
   setAddLogGroupsError: (error: Error | AnyObject) => void;
+  setIsParsingLogGroupFiles: (setIsAddingLogGroups: boolean) => void;
+  setParseLogGroupFilesError: (error: Error | AnyObject) => void;
 }
 
 export const createLogsStoreActions = (logsStore: Writable<LogStoreStateInterface & object>): LogsStoreActionsInterface => {
 
   return {
-    replaceManyLogGroups: (logGroups: LogGroup[]) => {
+    replaceLogGroups: (logGroups: LogGroup[]) => {
       logsStore.update(state => {
         // first create a copy
         let newLogGroups = state.logGroups.slice();
@@ -33,12 +43,48 @@ export const createLogsStoreActions = (logsStore: Writable<LogStoreStateInterfac
         )
       })
     },
-    setIsAddingLogGroups: (setIsAddingLogGroups: boolean) => {
+    setIsLoadingLogGroups: (isLoadingLogGroups: boolean) => {
       logsStore.update(state => {
         return _.assign(
           {},
           state,
-          { setIsAddingLogGroups: setIsAddingLogGroups }
+          { isLoadingLogGroups: isLoadingLogGroups }
+        )
+      })
+    },
+    setLoadLogGroupsError: (error: Error | AnyObject) => {
+      logsStore.update(state => {
+        return _.assign(
+          {},
+          state,
+          { loadLogGroupsError: error }
+        )
+      })
+    },
+    setIsSavingLogGroups: (isSavingLogGroups: boolean) => {
+      logsStore.update(state => {
+        return _.assign(
+          {},
+          state,
+          { isSavingLogGroups: isSavingLogGroups }
+        )
+      })
+    },
+    setSaveLogGroupsError: (error: Error | AnyObject) => {
+      logsStore.update(state => {
+        return _.assign(
+          {},
+          state,
+          { saveLogGroupsError: error }
+        )
+      })
+    },
+    setIsAddingLogGroups: (isAddingLogGroups: boolean) => {
+      logsStore.update(state => {
+        return _.assign(
+          {},
+          state,
+          { isAddingLogGroups: isAddingLogGroups }
         )
       })
     },
@@ -48,6 +94,49 @@ export const createLogsStoreActions = (logsStore: Writable<LogStoreStateInterfac
           {},
           state,
           { addLogGroupsError: error }
+        )
+      })
+    },
+    replaceLogGroupFiles: (replaceLogGroupFilesRequest: { logGroupId: string; files: LogGroupFile[] }) => {
+      // deconstruct for ease
+      const { logGroupId, files } = replaceLogGroupFilesRequest;
+      // update state
+      logsStore.update((state) => {
+        console.log(state);
+        const foundLogGroupIndex = _.findIndex(state.logGroups, { logGroupId });
+        console.log('foundLogGroupIndex=', foundLogGroupIndex);
+        const foundLogGroup = new LogGroup(_.assign({}, state.logGroups[foundLogGroupIndex]));
+        console.log('foundLogGroup=', foundLogGroup);
+        for (const logGroupFile of replaceLogGroupFilesRequest.files) {
+          foundLogGroup.replaceFile({ hash: logGroupFile.hash }, logGroupFile);
+        }
+        // create a new stae based on the old state
+        const newState = _.assign(
+          {},
+          state
+        );
+        // replace/mutate/update the old state here
+        newState.logGroups[foundLogGroupIndex] = foundLogGroup;
+        console.log('newState=', newState)
+        // return new state
+        return _.assign({}, newState);
+      });
+    },
+    setIsParsingLogGroupFiles: (isParsingLogGroupFiles: boolean) => {
+      logsStore.update(state => {
+        return _.assign(
+          {},
+          state,
+          { isParsingLogGroupFiles: isParsingLogGroupFiles }
+        )
+      })
+    },
+    setParseLogGroupFilesError: (error: Error | AnyObject) => {
+      logsStore.update(state => {
+        return _.assign(
+          {},
+          state,
+          { parseLogGroupFilesError: error }
         )
       })
     }

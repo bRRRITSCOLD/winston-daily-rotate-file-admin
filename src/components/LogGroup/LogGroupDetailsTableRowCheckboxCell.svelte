@@ -5,7 +5,8 @@
   export let data;
   export let dataName;
 
-  let checked = data[dataName] ? data[dataName] : false;
+  let checked;
+  $: checked = data[dataName] ? data[dataName] : false;
 
   function change() {
     if (data[dataName]) {
@@ -24,7 +25,7 @@
   on:mouseover={() => { background = 'lightgray' }}
   on:mouseleave={() => { background = 'white' }}
 >
-  <Checkbox bind:checked={checked} on:change={change}></Checkbox>
+  <Checkbox bind:checked={checked} on:change={change} on:change></Checkbox>
 </div>
 
 <style>
