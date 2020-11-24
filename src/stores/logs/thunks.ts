@@ -5,7 +5,7 @@ import { v4 as uuid } from 'uuid';
 import { promiseUtils, _ } from '../../lib/utils';
 
 // models
-import { LogGroup } from "../../models";
+import { LogGroup } from "../../models/logs";
 
 // services
 import { directoriesService, filesService, logsService } from "../../services";

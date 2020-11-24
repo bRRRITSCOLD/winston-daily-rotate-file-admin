@@ -1,5 +1,5 @@
 import * as _ from 'lodash';
-import type { AnyObject } from '../../models';
+import type { AnyObject } from '../../models/common';
 
 declare module 'lodash' {
   interface LoDashStatic {

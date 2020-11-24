@@ -2,7 +2,8 @@
 import { _ } from '../../lib/utils';
 
 // models
-import type { AnyObject, LogGroup, LogGroupFile } from '../../models';
+import type { LogGroup } from '../../models/logs';
+import type { AnyObject } from "../../models/common";
 
 export interface LogStoreStateInterface {
   logGroups: LogGroup[];

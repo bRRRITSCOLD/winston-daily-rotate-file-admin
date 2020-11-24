@@ -6,7 +6,7 @@
   import { _ } from '../lib/utils';
 
   // models
-  import type { LogGroupFile } from '../models';
+  import type { LogGroupFile } from '../models/logs';
 
   // components
   import LogGroupDetailsTable from '../components/LogGroup/LogGroupDetailsTable.svelte';

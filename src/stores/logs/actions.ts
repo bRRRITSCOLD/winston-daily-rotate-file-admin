@@ -3,8 +3,9 @@ import type { LogStoreStateInterface } from "./state";
 import { _ } from '../../lib/utils';
 
 // models
-import { LogGroup } from "../../models";
-import type { AnyObject, LogGroupFile } from "../../models";
+import { LogGroup } from "../../models/logs";
+import type { LogGroupFile } from "../../models/logs";
+import type { AnyObject } from "../../models/common";
 
 export interface LogsStoreActionsInterface {
   replaceLogGroups: (logGroups: LogGroup[]) => void;

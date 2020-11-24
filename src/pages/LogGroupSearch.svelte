@@ -9,7 +9,7 @@
   import { _ } from '../lib/utils';
 
   // models
-  import type { LogGroup } from '../models';
+  import type { LogGroup } from '../models/logs';
 
   // components
   import LogGroupSearchTable from '../components/LogGroup/LogGroupSearchTable.svelte';
