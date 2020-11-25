@@ -58,8 +58,6 @@
       }}
       on:onAddButtonClick={async () => {
         await logsStore.addLogGroups();
-      }}
-      on:onSaveButtonClick={async () => {
         await logsStore.saveLogGroups($logsStore.logGroups);
       }}
       on:onTableRowDeleteCellComponentClick={async (event) => {
