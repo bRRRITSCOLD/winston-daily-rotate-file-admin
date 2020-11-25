@@ -10,6 +10,7 @@
 
   // components
   import LogGroupsRowCell from './LogGroupsTableRowCell.svelte';
+  import LogGroupsTableRowDeleteCell from "./LogGroupsTableRowDeleteCell.svelte";
   import LogGroupsHeaderCell from './LogGroupsTableHeaderCell.svelte';
 	import VirtualTable from '../UI/Table/VirtualTable.svelte';
 
@@ -25,9 +26,16 @@
   let virtualTableColumns = [];
   $: virtualTableColumns = [
     {
+      display: 'Delete',  // What will be displayed as the column header
+      dataName: 'delete',  // The key of a row to get the column's data from
+      width: virtualTableWidth * .15,
+      cellComponent: LogGroupsTableRowDeleteCell,
+      headerComponent: LogGroupsHeaderCell
+    },
+    {
       display: 'Log Group',  // What will be displayed as the column header
       dataName: 'auditLog',  // The key of a row to get the column's data from
-      width: virtualTableWidth,
+      width: virtualTableWidth * .85,
       cellComponent: LogGroupsRowCell,
       headerComponent: LogGroupsHeaderCell
     }
@@ -56,8 +64,13 @@
         rowHeight={50}
         rows={logGroups} 
         columns={virtualTableColumns}
-        on:onVirtualTableRowCellClick={(event) => {
+        on:onVirtualTableRowCellComponentClick={(event) => {
           if (event.detail.columnIndex === 0) {
+            dispatch('onTableRowDeleteCellComponentClick', { rowIndex: event.detail.rowIndex });
+          }
+        }}
+        on:onVirtualTableRowCellClick={(event) => {
+          if (event.detail.columnIndex === 1) {
             dispatch('onTableRowLogGroupCellClick', { rowIndex: event.detail.rowIndex });
           }
         }}

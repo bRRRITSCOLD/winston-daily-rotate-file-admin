@@ -62,6 +62,10 @@
       on:onSaveButtonClick={async () => {
         await logsStore.saveLogGroups($logsStore.logGroups);
       }}
+      on:onTableRowDeleteCellComponentClick={async (event) => {
+        logsStore.deleteLogGroup($logsStore.logGroups[event.detail.rowIndex]);
+        await logsStore.saveLogGroups($logsStore.logGroups);
+      }}
       on:onTableRowLogGroupCellClick={(event) => {
         // find the log audit file clicked on
         const clickedLogAudigFile = $logsStore.logGroups[event.detail.rowIndex];

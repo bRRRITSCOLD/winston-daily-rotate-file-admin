@@ -279,6 +279,18 @@ bind:this={wrapper}
               this={column.cellComponent}
               {...column}
               {...row}
+              on:click={(event) => {
+                dispatch('onVirtualTableRowCellComponentClick', {
+                  columnIndex: j,
+                  rowIndex: row.i
+                });
+              }}
+              on:dblclick={(event) => {
+                dispatch('onVirtualTableRowCellComponentDoubleClick', {
+                  columnIndex: j,
+                  rowIndex: i
+                });
+              }}
               on:change={(event) => {
                 console.log('{}VirtualTable::svelte component::on change::event=', event);
               }}

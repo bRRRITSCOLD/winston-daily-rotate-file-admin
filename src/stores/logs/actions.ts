@@ -8,6 +8,7 @@ import type { LogGroupFile } from "../../models/logs";
 import type { AnyObject } from "../../models/common";
 
 export interface LogsStoreActionsInterface {
+  deleteLogGroup: (logGroupId: LogGroup) => void;
   replaceLogGroups: (logGroups: LogGroup[]) => void;
   replaceLogGroupFiles: (replaceLogGroupFilesRequest: { logGroupId: string; files: LogGroupFile[] }) => void;
   setIsLoadingLogGroups: (setIsLoadingLogGroups: boolean) => void;
@@ -23,6 +24,23 @@ export interface LogsStoreActionsInterface {
 export const createLogsStoreActions = (logsStore: Writable<LogStoreStateInterface & object>): LogsStoreActionsInterface => {
 
   return {
+    deleteLogGroup: (logGroup: LogGroup) => {
+      logsStore.update(state => {
+        // first create a copy
+        let newLogGroups = state.logGroups.slice();
+        // find index of item
+        const foundLogGroupIndex = _.findIndex(newLogGroups, { logGroupId: logGroup.logGroupId })
+        // remove log group at specific
+        // index if found
+        if (foundLogGroupIndex > -1) newLogGroups.splice(foundLogGroupIndex, 1);
+        // return the new state
+        return _.assign(
+          {},
+          state,
+          { logGroups: newLogGroups }
+        )
+      })
+    },
     replaceLogGroups: (logGroups: LogGroup[]) => {
       logsStore.update(state => {
         // first create a copy
