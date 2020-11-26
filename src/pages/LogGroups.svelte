@@ -14,7 +14,7 @@
     import { logsStore } from '../stores/logs';
   
     // props
-    export let params: any = {};
+    // export let params: any = {};
   
     // life cycles
     onMount(() => {
