@@ -18,6 +18,8 @@ jobs:
           node-version: 12
       - name: get version
         run: echo ::set-env name=PACKAGE_VERSION::$(node -p "require('./package.json').version")
+        env:
+          ACTIONS_ALLOW_UNSECURE_COMMANDS: true
       - name: create release
         id: create_release
         uses: actions/create-release@v1.1.0
