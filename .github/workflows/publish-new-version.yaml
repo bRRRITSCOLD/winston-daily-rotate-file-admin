@@ -1,6 +1,6 @@
 name: "publish-new-version"
 on:
-  push:
+  pull_request:
     branches:
       - release
 
