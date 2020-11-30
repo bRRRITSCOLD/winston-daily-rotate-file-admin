@@ -2,7 +2,7 @@ name: "publish-new-version"
 on:
   push:
     branches:
-      - main
+      - release
 
 jobs:
   create-release:
